@@ -2,7 +2,7 @@
 
 A powerful, feature-rich Neovim configuration optimized for audio development, Python, Arduino, and LaTeX, with a focus on productivity and extensibility.
 
-![Neovim Dashboard](./assets/nv-homepage.png)
+![Neovim Dashboard](./assets/homepage.png)
 
 ## ✨ Features
 
