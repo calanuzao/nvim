@@ -26,48 +26,50 @@ require('calanuzao.remaps')
 require('calanuzao.options')
 
 -- Lavender Theme Configuration
-vim.g.lavender = {
-  transparent = {
-    background = false,
-    float      = false,
-    popup      = false,
-    sidebar    = false,
-  },
-  contrast = true,
+--vim.g.lavender = {
+--  transparent = {
+--    background = false,
+--    float      = false,
+--    popup      = false,
+--    sidebar    = false,
+--  },
+--  contrast = true,
 
-  italic = {
-    comments  = true,
-    functions = true,
-    keywords  = false,
-    variables = false,
-  },
+--  italic = {
+--    comments  = true,
+--    functions = true,
+--    keywords  = false,
+--    variables = false,
+ -- },
 
-  signs = false,
+ -- signs = false,
 
-  overrides = {
-    theme = {
-      NormalFoo = { fg = "fg", bg = "decepticon_dark", bold = true },
-      NormalBar = { fg = "#7B68EE", bg = "#110022", ctermfg = 99, ctermbg = 54 },
-      NormalBaz = { fg = "decepticon_blue", ctermfg = "decepticon_purple" },
-      Normal = { fg = "#E6E6FA", bg = "#110022", ctermfg = 189, ctermbg = 54 },
-    },
-    colors = {
-      hex = {
-        decepticon_dark = "#1E0030",    -- Deep base purple
-        decepticon_blue = "#4D6CFA",    -- Electric blue (top of logo)
-        decepticon_purple = "#9B30FF",  -- Bright purple (bottom of logo)
-        neon_accent = "#7B68EE",        -- Metallic highlight
-      },
-      cterm = {
-        decepticon_blue = 69,     -- Bright blue
-        decepticon_purple = 99,   -- Deep purple
-      },
-    },
-  },
-}
+ -- overrides = {
+ --   theme = {
+  --    NormalFoo = { fg = "fg", bg = "decepticon_dark", bold = true },
+  --    NormalBar = { fg = "#7B68EE", bg = "#110022", ctermfg = 99, ctermbg = 54 },
+  --    NormalBaz = { fg = "decepticon_blue", ctermfg = "decepticon_purple" },
+  --    Normal = { fg = "#E6E6FA", bg = "#110022", ctermfg = 189, ctermbg = 54 },
+  --  },
+  --  colors = {
+  --    hex = {
+  --      decepticon_dark = "#1E0030",    -- Deep base purple
+  --      decepticon_blue = "#4D6CFA",    -- Electric blue (top of logo)
+  --      decepticon_purple = "#9B30FF",  -- Bright purple (bottom of logo)
+  --      neon_accent = "#7B68EE",        -- Metallic highlight
+  --    },
+  --    cterm = {
+  --      decepticon_blue = 69,     -- Bright blue
+  --      decepticon_purple = 99,   -- Deep purple
+  --    },
+  --  },
+  --},
+--}
 
 -- Theme
-vim.cmd "colorscheme lavender"
+vim.o.background = "dark" -- or "light" for light mode
+vim.cmd([[colorscheme gruvbox]])
+--vim.cmd "colorscheme lavender"
 -- vim.cmd("colorscheme catppuccin")
 -- vim.cmd.colorscheme("darcula-dark")
 
