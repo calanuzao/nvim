@@ -1,4 +1,4 @@
-vim.g.python3_host_prog=vim.fn.expand("~/.virtualenvs/neovim/bin/python3") -- Pointing Neovim at Virtual Environment
+vim.g.python3_host_prog = "/opt/homebrew/Caskroom/miniconda/base/envs/neovim/bin/python3"
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -66,10 +66,11 @@ require('calanuzao.options')
   --},
 --}
 
--- Theme
-vim.o.background = "dark" -- or "light" for light mode
-vim.cmd([[colorscheme gruvbox]])
---vim.cmd "colorscheme lavender"
+-- Themes
+vim.o.background = "light" 
+-- vim.cmd("colorscheme one")
+-- vim.cmd([[colorscheme gruvbox]])
+-- vim.cmd "colorscheme lavender"
 -- vim.cmd("colorscheme catppuccin")
 -- vim.cmd.colorscheme("darcula-dark")
 
