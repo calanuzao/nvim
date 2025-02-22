@@ -1,4 +1,34 @@
 return {
+  -- Theme Picker
+{
+    "zaldih/themery.nvim",
+    lazy = false,
+    config = function()
+      require("themery").setup({
+        -- add the config here
+      })
+    end
+},
+  -- GitHub Copilot
+{
+  "github/copilot.vim",
+  lazy = false,  -- loading immediately
+  config = function()
+    -- enable Copilot globally
+    vim.g.copilot_enabled = true
+    
+    -- sisable the default key mappings for Tab and Shift-Tab
+    vim.g.copilot_no_tab_map = true
+    
+    -- Optional: Custom key mappings
+    vim.api.nvim_set_keymap('i', '<C-N>', 'copilot#Next()', { noremap = true, silent = true })
+    vim.api.nvim_set_keymap('i', '<C-P>', 'copilot#Previous()', { noremap = true, silent = true })
+
+    -- additional behavior
+    vim.g.copilot_auto_trigger = true  -- Automatically trigger suggestions as you type
+    vim.g.copilot_accept_key = '<C-l>' -- Use <C-l> to accept suggestions
+  end 
+},
   -- LaTex Editor (VimTeX)
 {
   "lervag/vimtex",
@@ -6,7 +36,7 @@ return {
   config = function()
     -- Detect OS
     local system = vim.loop.os_uname().sysname
-    
+
     -- Set PDF viewer based on OS
     if system == "Darwin" then  -- macOS
       vim.g.vimtex_view_method = 'skim'
@@ -51,8 +81,8 @@ return {
       math_symbols = 1,
       sections = 0,
       styles = 1,
-    }
-    
+    } 
+
     -- Latex warnings to ignore
     vim.g.vimtex_quickfix_ignore_filters = {
       'Underfull \\hbox',
@@ -128,7 +158,6 @@ return {
   },
   config = function()
       require("chatgpt").setup({
-          -- Command to retrieve the API key from your environment variables
           api_key_cmd = "echo $API_KEY"
       })
   end,
@@ -145,7 +174,6 @@ return {
   {
     "ThePrimeagen/vim-be-good",
     config = function()
-        -- You can optionally add configuration here if needed
     end
   },
   {
@@ -174,7 +202,7 @@ return {
             }
         }
 
-        -- Keymap setup for toggleterm
+        -- keymaps for toggleterm
         local keymap = vim.api.nvim_set_keymap
         local opts = { noremap = true, silent = true }
 
@@ -274,7 +302,9 @@ return {
       })
     end,
   },
-  { "preservim/vim-pencil" },
+  { 
+    "preservim/vim-pencil" 
+  },
   {
     "folke/zen-mode.nvim",
     opts = {
@@ -322,7 +352,7 @@ return {
 	 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡁⢈⣒⠲⠾⠈⠻⢸⠿⢛⣉⡙⢿⣿⣿⣿⣿⣿⣯⢻⣿⠞⣼⣿⣿⣿⣷⣾⣿⣿⡟⣡⠈⠿⠿⠿⢿⣿⣿⠿⠀⠴⠀⠇⠘⣾⡇⢿⣿⣿⣿⣦⠀
 	 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡦⠙⣥⡀⣿⣧⡴⠎⣁⡙⠿⣿⣿⣿⣿⣿⣿⣿⡈⣯⢰⠘⣿⡿⠿⠟⠛⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⡇⡒⠀⠀⡄⡿⠁⢚⣿⣿⣿⣿⡇
 	 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⢸⣧⢹⣯⣴⡿⠿⠿⠶⠬⠍⠙⠛⠛⠛⠿⠇⣿⠨⡑⠈⠀⠀⠀⢀⡤⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⡇⠇⢰⡆⢰⠃⠀⢰⣿⣿⣿⣿⢃
-	 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢀⡙⠌⠃⠀⠀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⡇⠁⠀⠀⠁⠀⠀⢺⣿⣿⣿⡿⣸
+	 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢀⡙⠌⠃⠀⠀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢀⣀⡀⠀⠀⠀𝖈𝖆𝖑𝖔𝖉𝖎𝖎✍⠀⠀⣼⣿⣿⡇⠁⠀⠀⠁⠀⠀⢺⣿⣿⣿⡿⣸
 	 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠘⠆⠀⠀⠀⠛⠁⠀⠀⠀⠀⠀⠀⠀⢀⣶⠸⣿⣿⣿⣧⡀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣾⣿⣿⣿⠁⠀⠀⠀⠀⠐⢦⡍⣹⣿⣿⣇⣿
 	 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢠⠢⡄⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣿⣿⡀⢿⣿⣿⣿⣿⣷⣦⣤⡤⠄⢀⣂⣀⣙⡛⠿⣿⣿⣿⡀⠀⠀⢠⡘⣦⡱⣶⣿⣿⡟⣸⣿
 	 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⢸⣧⡄⠀⠈⢶⣶⣶⣶⣶⣶⣶⣿⣿⣿⣿⡇⢸⣿⡿⢿⣿⡿⢛⣩⣶⣿⣿⣿⣿⣿⣿⣶⣌⢻⣿⡇⠀⠀⡆⠱⡌⣣⣿⣿⣿⣇⣿⣿
@@ -646,7 +676,9 @@ return {
       })
     end,
   },
-  { "nvim-telescope/telescope-fzf-native.nvim",    build = "make" },
+  { 
+    "nvim-telescope/telescope-fzf-native.nvim",    build = "make" 
+  },
   {
     "rose-pine/neovim", name = "rose-pine"
   },
@@ -659,18 +691,21 @@ return {
     lazy = false,
     priority = 1000,
   },
+
+
+  -- THEMES
   {
     "folke/tokyonight.nvim",
   },
-{
-"rakr/vim-one",
-config = function()
-    vim.cmd([[colorscheme one]])
-    vim.opt.background = "light"  -- for the light version
-    -- or vim.opt.background = "dark" for the dark version
-    vim.opt.termguicolors = true
-end,
-},
+  {
+  "rakr/vim-one",
+  config = function()
+      vim.cmd([[colorscheme one]])
+      vim.opt.background = "light"  -- for the light version
+      -- or vim.opt.background = "dark" for the dark version
+      vim.opt.termguicolors = true
+  end,
+  },
   {
     "xiantang/darcula-dark.nvim",
     dependencies = {
