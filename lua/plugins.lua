@@ -9,6 +9,23 @@ return {
       })
     end
 },
+  -- vim-matlab
+{
+  "daeyun/vim-matlab",
+  dependencies = {
+    "neovim/python-client",
+  },
+},
+  -- Neoscroll
+{
+    "karb94/neoscroll.nvim",
+    lazy = false,
+    config = function()
+      require('neoscroll').setup({
+        -- Add your custom options here
+      })
+    end,
+},
   -- GitHub Copilot
 {
   "github/copilot.vim",
@@ -23,7 +40,6 @@ return {
     -- Optional: Custom key mappings
     vim.api.nvim_set_keymap('i', '<C-N>', 'copilot#Next()', { noremap = true, silent = true })
     vim.api.nvim_set_keymap('i', '<C-P>', 'copilot#Previous()', { noremap = true, silent = true })
-
     -- additional behavior
     vim.g.copilot_auto_trigger = true  -- Automatically trigger suggestions as you type
     vim.g.copilot_accept_key = '<C-l>' -- Use <C-l> to accept suggestions
