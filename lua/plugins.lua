@@ -343,77 +343,82 @@ return {
       end,
     },
   },
-  {
-    "nvimdev/dashboard-nvim",
-    event = "VimEnter",
-    opts = function()
-      local logo = [[
+{
+  "goolord/alpha-nvim",
+  event = "VimEnter",
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  config = function()
+    local alpha = require("alpha")
+    local dashboard = require("alpha.themes.dashboard")
 
-⣿⣿⣿⣿⣿⣶⣄⣠⣴⣶⣶⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⡇⠀⣿⣿⠆⢰⣿⣷⠀
-⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⢀⣄⣀⠀⠀⠀⣀⣠⣄⣀⣀⣀⠀⠸⣿⣿⠀⠀⠀⢀⡀⠀⣀⡀⠀⠀⠀⠀⣀⣠⣄⣸⣿⡇⠀⢈⣉⡀⠀⣉⣁⠀
-⠛⠿⣿⣿⣿⣿⣿⣷⣹⣿⣿⣿⣧⠀⣰⣷⠀⠘⠿⣿⠇⠀⣾⣿⠿⠻⢿⣿⣿⠀⠀⣿⣿⠀⢀⣾⣿⡇⠀⢿⣿⣦⡀⢀⣾⣿⠟⠻⢿⣿⣿⠀⢸⣿⡇⠀⣿⣿⡆
-⠀⢸⣿⣿⣿⡛⣿⣿⣷⣿⣿⣿⠟⠀⣿⣿⠀⠀⠀⠀⠀⢸⣿⡏⠀⠀⠀⢻⣿⡆⠀⢹⣿⡇⢸⣿⡟⠀⠀⠀⠹⣿⣧⢸⣿⡏⠀⠀⠀⣿⣿⡄⠈⣿⣿⠀⢸⣿⡇
-⠀⠘⠿⣿⣿⣿⣾⣿⣿⣿⠏⠁⠀⠀⢻⣿⣧⡀⠀⠀⣀⠀⣿⣿⣄⠀⠀⢸⣿⣇⠀⢸⣿⣧⠘⣿⣿⣄⠀⠀⣠⣿⡟⠘⣿⣿⣄⠀⠀⢻⣿⡇⠀⣿⣿⡄⠘⣿⣧
-⠀⠀      ⠀⠀⢸⣿⣿⣿⡏⣿⠇⠀⠀⠀⠀⠙⠿⣿⣿⣿⡿⠆⠈⠻⢿⣿⠀⠘⣿⣿⣷⠘⣿⣿⠀⠘⠻⣿⡄⠀⣿⠿⠁⠀⠘⠿⣿⣿⠀⠸⣿⡷⠀⢻⣿⡇⠀⣿⣿⠀⠀⠀⠀⠀
+    -- Set header with Calodii Studios logo
+    dashboard.section.header.val = {
+      [[⣿⣿⣿⣿⣿⣶⣄⣠⣴⣶⣶⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⡇⠀⣿⣿⠆⢰⣿⣷⠀ ]],
+      [[⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⢀⣄⣀⠀⠀⠀⣀⣠⣄⣀⣀⣀⠀⠸⣿⣿⠀⠀⠀⢀⡀⠀⣀⡀⠀⠀⠀⠀⣀⣠⣄⣸⣿⡇⠀⢈⣉⡀⠀⣉⣁⠀ ]],
+      [[⠛⠿⣿⣿⣿⣿⣿⣷⣹⣿⣿⣿⣧⠀⣰⣷⠀⠘⠿⣿⠇⠀⣾⣿⠿⠻⢿⣿⣿⠀⠀⣿⣿⠀⢀⣾⣿⡇⠀⢿⣿⣦⡀⢀⣾⣿⠟⠻⢿⣿⣿⠀⢸⣿⡇⠀⣿⣿⡆ ]],
+      [[⠀⢸⣿⣿⣿⡛⣿⣿⣷⣿⣿⣿⠟⠀⣿⣿⠀⠀⠀⠀⠀⢸⣿⡏⠀⠀⠀⢻⣿⡆⠀⢹⣿⡇⢸⣿⡟⠀⠀⠀⠹⣿⣧⢸⣿⡏⠀⠀⠀⣿⣿⡄⠈⣿⣿⠀⢸⣿⡇ ]],
+      [[⠀⠘⠿⣿⣿⣿⣾⣿⣿⣿⠏⠁⠀⠀⢻⣿⣧⡀⠀⠀⣀⠀⣿⣿⣄⠀⠀⢸⣿⣇⠀⢸⣿⣧⠘⣿⣿⣄⠀⠀⣠⣿⡟⠘⣿⣿⣄⠀⠀⢻⣿⡇⠀⣿⣿⡄⠘⣿⣧ ]],
+      [[⠀⠀  ⢸⣿⣿⣿⡏⣿⠇⠀⠀⠀⠀⠙⠿⣿⣿⣿⡿⠆⠈⠻⢿⣿⠀⠘⣿⣿⣷⠘⣿⣿⠀⠘⠻⣿⡄⠀⣿⠿⠁⠀⠘⠿⣿⣿⠀⠸⣿⡷⠀⢻⣿⡇⠀⣿⣿⠀]],
+      [[                                                                    ]],
+      [[                        calodii studios 🐝                          ]],
+      [[                                                                    ]],
+    }
 
+    -- Set menu with styled icons
+    dashboard.section.buttons.val = {
+      dashboard.button("f", "󰈞  Find file", ":Telescope find_files <CR>"),
+      dashboard.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
+      dashboard.button("r", "󰄉  Recently used files", ":Telescope oldfiles <CR>"),
+      dashboard.button("t", "󰊄  Find text", ":Telescope live_grep <CR>"),
+      dashboard.button("c", "  Configuration", ":e $MYVIMRC <CR>"),
+      dashboard.button("l", "󰒲  Lazy", ":Lazy<CR>"),
+      dashboard.button("q", "󰗼  Quit Neovim", ":qa<CR>"),
+    }
+
+    -- Make it darker by using different highlight groups
+    dashboard.section.header.opts.hl = "Comment"
+    dashboard.section.buttons.opts.hl = "Keyword"
+    dashboard.section.buttons.opts.hl_shortcut = "LineNr"
+
+    local function footer()
+      local stats = require("lazy").stats()
+      local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
       
-      ]]
+      local date = os.date("%a %d %b")
+      local time = os.date("%H:%M:%S")
+      
+      return "⚡ Neovim loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms .. "ms"
+          .. "  |  " .. date .. "  |  " .. time
+    end
 
-      logo = string.rep("\n", 8) .. logo .. "\n\n"
+    dashboard.section.footer.val = footer()
+    dashboard.section.footer.opts.hl = "NonText"
 
-      local opts = {
-        theme = "doom",
-        hide = {
-          -- this is taken care of by lualine
-          -- enabling this messes up the actual laststatus setting after loading a file
-          statusline = false,
-        },
-        config = {
-          header = vim.split(logo, "\n"),
-          -- stylua: ignore
-          center = {
-            { action = "Telescope find_files", desc = " Find file", icon = " ", key = "f" },
-            { action = "ene | startinsert", desc = " New file", icon = " ", key = "n" },
-            { action = "Telescope oldfiles", desc = " Recent files", icon = " ", key = "r" },
-            { action = "Telescope live_grep", desc = " Find text", icon = " ", key = "g" },
-            --{
-            --  action = [[lua require("lazyvim.util").telescope.config_files()()]],
-            --  desc = " Config",
-            --  icon = " ",
-            --  key = "c"
-            --},
-            --{ action = 'lua require("persistence").load()', desc = " Restore Session", icon = " ", key = "s" },
-            --{ action = "LazyExtras", desc = " Lazy Extras", icon = " ", key = "x" },
-            { action = "Lazy", desc = " Lazy", icon = "󰒲 ", key = "l" },
-            { action = "qa", desc = " Quit", icon = " ", key = "q" },
-          },
-          footer = function()
-            local stats = require("lazy").stats()
-            local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-            return { "⚡ Neovim loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms .. "ms" }
-          end,
-        },
-      }
+    -- Add more padding for better spacing
+    dashboard.config.layout = {
+      { type = "padding", val = 3 },
+      dashboard.section.header,
+      { type = "padding", val = 1 },
+      dashboard.section.buttons,
+      { type = "padding", val = 1 },
+      dashboard.section.footer,
+    }
 
-      for _, button in ipairs(opts.config.center) do
-        button.desc = button.desc .. string.rep(" ", 43 - #button.desc)
-        button.key_format = "  %s"
-      end
-
-      -- close Lazy and re-open when the dashboard is ready
-      if vim.o.filetype == "lazy" then
-        vim.cmd.close()
-        vim.api.nvim_create_autocmd("User", {
-          pattern = "DashboardLoaded",
-          callback = function()
-            require("lazy").show()
-          end,
-        })
-      end
-
-      return opts
-    end,
-  },
+    -- Configure options
+    dashboard.opts.opts.noautocmd = true
+    alpha.setup(dashboard.opts)
+    
+    -- Create autocmd to set a darker background for the dashboard
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "AlphaReady",
+      callback = function()
+        vim.cmd("hi DashboardHeader guifg=#5c6370")
+        vim.cmd("hi DashboardButtons guifg=#5c6370")
+        vim.cmd("hi DashboardFooter guifg=#5c6370")
+      end,
+    })
+  end,
+},
   {
     "folke/noice.nvim",
     event = "VeryLazy",
