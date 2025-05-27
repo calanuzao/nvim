@@ -367,10 +367,10 @@ return {
     -- Set menu with styled icons
     dashboard.section.buttons.val = {
       dashboard.button("f", "󰈞  Find file", ":Telescope find_files <CR>"),
-      dashboard.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
-      dashboard.button("r", "󰄉  Recently used files", ":Telescope oldfiles <CR>"),
+      dashboard.button("n", "Σ  New file", ":ene <BAR> startinsert <CR>"),
+      dashboard.button("r", "Ω  Recently used files", ":Telescope oldfiles <CR>"),
       dashboard.button("t", "󰊄  Find text", ":Telescope live_grep <CR>"),
-      dashboard.button("c", "  Configuration", ":e $MYVIMRC <CR>"),
+      dashboard.button("c", "∫  Configuration", ":e $MYVIMRC <CR>"),
       dashboard.button("l", "󰒲  Lazy", ":Lazy<CR>"),
       dashboard.button("q", "󰗼  Quit Neovim", ":qa<CR>"),
     }
@@ -699,27 +699,79 @@ return {
   },
   {
     "folke/tokyonight.nvim",
+    lazy = false,
+    priority = 999,
   },
   {
-  "rakr/vim-one",
-  config = function()
-      vim.cmd([[colorscheme one]])
-      vim.opt.background = "light"  -- for the light version
-      -- or vim.opt.background = "dark" for the dark version
-      vim.opt.termguicolors = true
-  end,
+    "rakr/vim-one",
+    lazy = false,
+    priority = 999,
   },
   {
     "xiantang/darcula-dark.nvim",
+    lazy = false,
+    priority = 999,
     dependencies = {
-        "nvim-treesitter/nvim-treesitter",
+      "nvim-treesitter/nvim-treesitter",
     },
   },
   {
-    "catppuccin/nvim",
+    "catppuccin/nvim", 
+    name = "catppuccin",
+    lazy = false,
+    priority = 999,
   },
   {
     "ellisonleao/gruvbox.nvim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "rose-pine/neovim", 
+    name = "rose-pine",
+    lazy = false,
+    priority = 1000,
+  },
+  {
+    "dracula/vim", 
+    name = "dracula",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "EdenEast/nightfox.nvim",  -- Contains nightfox, duskfox, nordfox, terafox, carbonfox
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "rebelot/kanagawa.nvim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "navarasu/onedark.nvim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "sainnhe/everforest",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "shaunsingh/nord.nvim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "tanvirtin/monokai.nvim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "sainnhe/sonokai",
+    lazy = false,
+    priority = 999,
   },
   {
     "exosyphon/telescope-color-picker.nvim",
