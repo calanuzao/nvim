@@ -376,6 +376,7 @@ return {
       dashboard.button("r", "Ω  Recently used files", ":Telescope oldfiles <CR>"),
       dashboard.button("t", "φ  Find text", ":Telescope live_grep <CR>"),
       dashboard.button("c", "∫  Configuration", ":e $MYVIMRC <CR>"),
+      dashboard.button("m", "⌨  Keymaps", ":e ~/.config/nvim/lua/calanuzao/remaps.lua <CR>"), 
       dashboard.button("l", "󰒲  Lazy", ":Lazy<CR>"),
       dashboard.button("q", "󰗼  Quit Neovim", ":qa<CR>"),
     }

@@ -1,4 +1,11 @@
+-- space bar is leader key
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+-- python path for neovim
 vim.g.python3_host_prog = "/opt/homebrew/Caskroom/miniconda/base/envs/neovim/bin/python3"
+
+-- lazy.nvim setup
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -12,25 +19,23 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
+-- initialize lazy with plugins
 require("lazy").setup("plugins", {
   change_detection = {
     notify = false,
   },
 })
 
+-- Load Modules
 require('calanuzao.globals')
 require('calanuzao.remaps')
 require('calanuzao.options')
+require('calanuzao.dsp')
 
 -- Add theme persistence
 local theme_file = vim.fn.stdpath("data") .. "/last_theme"
 
 -- Theme Switcher 
--- Update your Atheme command with this function
-
 vim.api.nvim_create_user_command('Atheme', function(opts)
   local theme = opts.args
   
