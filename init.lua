@@ -2,6 +2,9 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- Load compatibility layer to fix deprecation warnings
+require("calanuzao.compat").setup()
+
 -- python path for neovim
 vim.g.python3_host_prog = "/opt/homebrew/Caskroom/miniconda/base/envs/neovim/bin/python3"
 
