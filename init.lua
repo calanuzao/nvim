@@ -436,3 +436,59 @@ vim.api.nvim_create_autocmd("VimEnter", {
     load_last_theme()
   end
 })
+
+---------------------------------------------------------------
+-- NEOVIDE CONFIGURATION
+---------------------------------------------------------------
+
+-- Font
+vim.o.guifont = "FiraCode Nerd Font:h14"
+
+-- Disable cursor animation/effects
+vim.g.neovide_cursor_vfx_mode = ""
+vim.g.neovide_cursor_animation_length = 0
+
+-- Enble cursor animation effects
+-- vim.g.neovide_cursor_animation_length = 0.02
+-- vim.g.neovide_cursor_trail_length = 0.2
+-- vim.g.neovide_cursor_vfx_mode = "sonicboom"
+
+-- Set cursor to always be a beam in all modes
+vim.o.guicursor = "n-v-c-i-ci-ve-r-cr-o-sm:ver25"
+
+-- Transparency
+vim.g.neovide_opacity = 0.9
+
+-- Floating blur (macOS/Linux only)
+vim.g.neovide_floating_blur_amount_x = 2.0
+vim.g.neovide_floating_blur_amount_y = 2.0
+
+-- Padding
+vim.g.neovide_padding_top = 8
+vim.g.neovide_padding_bottom = 8
+vim.g.neovide_padding_right = 10
+vim.g.neovide_padding_left = 10
+
+-- Performance Debugging
+vim.g.neovide_profiler = false               -- Disable profiler by default 
+vim.g.neovide_profiler_size = 24             -- Font size for profiler
+vim.g.neovide_profiler_position = "topright" -- Position of the profiler
+vim.g.neovide_refresh_rate = 60              -- Limit refresh rate to save resources
+vim.g.neovide_no_idle = true                 -- Reduces CPU usage when idle
+vim.g.neovide_fullscreen = false             -- Toggle fullscreen mode
+
+-- Custom command to toggle the profiler
+vim.api.nvim_create_user_command('Specs', function()
+  vim.g.neovide_profiler = not vim.g.neovide_profiler
+  print("Neovide profiler " .. (vim.g.neovide_profiler and "enabled" or "disabled"))
+end, {})
+
+-- Dashboard Configuration
+vim.api.nvim_create_autocmd('BufDelete', {
+  callback = function()
+    if #vim.fn.getbufinfo({ buflisted = 1 }) == 0 then
+      vim.cmd('Dashboard')
+    end
+  end
+})
+

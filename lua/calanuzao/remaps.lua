@@ -175,7 +175,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 ---------------------------------------------------------------
--- CUSTOM COMMANDS
+-- REMAPPS COMMANDS
 ---------------------------------------------------------------
 -- DSP formulas reference command (esc -> :dsp)
 vim.api.nvim_create_user_command('DSP', function()
@@ -291,20 +291,40 @@ vim.api.nvim_create_user_command('Maps', function()
     title_pos = "center",
   })
   
+  -- Function to center text in available width
+  local function center_text(text, available_width)
+    local text_length = vim.fn.strdisplaywidth(text)
+    local padding = math.max(0, math.floor((available_width - text_length) / 2))
+    return string.rep(" ", padding) .. text
+  end
+  
   local lines = {}
   
+  -- Add centered title
+  table.insert(lines, "")
+  table.insert(lines, center_text("KEYMAPPINGS CHEAT SHEET", width))
+  table.insert(lines, "")
+  table.insert(lines, center_text(string.rep("─", width - 20), width))
+  table.insert(lines, "")
+  
   for category, maps in pairs(mappings) do
-    table.insert(lines, "# " .. category)
+    -- Center the category headers
+    table.insert(lines, center_text("# " .. category, width))
     table.insert(lines, "")
     
+    -- Create a table-like format for the mappings
     for key, desc in pairs(maps) do
-      table.insert(lines, string.format("%-20s %s", key, desc))
+      -- Don't center the actual mappings - keep them aligned for readability
+      table.insert(lines, string.format("    %-20s %s", key, desc))
     end
     
     table.insert(lines, "")
-    table.insert(lines, "----------------------------------------------------------")
+    table.insert(lines, center_text(string.rep("─", width - 20), width))
     table.insert(lines, "")
   end
+  
+  -- Add centered footer
+  table.insert(lines, center_text("Press q or <Esc> to close", width))
   
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.api.nvim_buf_set_option(buf, "modifiable", false)
@@ -323,14 +343,20 @@ vim.api.nvim_create_user_command('Maps', function()
   map_key('<C-u>', '<C-u>zz')
   map_key('<C-f>', '<C-f>zz')
   map_key('<C-b>', '<C-b>zz')
+  map_key('G', 'Gzz')
+  map_key('gg', 'ggzz')
   
   -- Highlight the headings
   local line_num = 0
   for _, line in ipairs(lines) do
-    if line:match("^# ") then
+    if line:match("^%s*# ") then
       vim.api.nvim_buf_add_highlight(buf, -1, "Title", line_num, 0, -1)
-    elseif line:match("^%-%-%-%-") then
+    elseif line:match("^%s*─") then
       vim.api.nvim_buf_add_highlight(buf, -1, "Comment", line_num, 0, -1)
+    elseif line:match("Press q or") then
+      vim.api.nvim_buf_add_highlight(buf, -1, "Comment", line_num, 0, -1)
+    elseif line:match("^%s*KEYMAPPINGS") then
+      vim.api.nvim_buf_add_highlight(buf, -1, "Special", line_num, 0, -1)
     end
     line_num = line_num + 1
   end

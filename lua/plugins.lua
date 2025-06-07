@@ -1,4 +1,29 @@
 return {
+  -- transparent background warning fix
+{
+  "rcarriga/nvim-notify",
+  config = function()
+    require("notify").setup({
+      background_colour = "#000000", -- prevent transparency-related warning
+    })
+  end,
+},
+{
+  -- transparent background
+  "xiyaowong/transparent.nvim",
+  config = function()
+     require("transparent").setup({
+       enable = true,
+       extra_groups = {
+         "NormalFloat",
+         "NvimTreeNormal",
+         "TelescopeNormal",
+       },
+       exclude = {}, -- optional
+     })
+     vim.cmd("TransparentEnable")
+   end
+},
   -- icons
 {
   'nvim-tree/nvim-web-devicons',

@@ -1,27 +1,27 @@
--- unicode math simbols are used instead of LaTeX for better compatibility
+-- Unicode representation is used for better compatibility
 local M = {}
 
 function M.dsp_formulas()
   local formulas = {
     ["Basic"] = {
-      ["Sampling"] = "fₛ = 1/Tₛ (sampling frequency = 1/sampling period)",
-      ["Nyquist"] = "fₛ > 2 · fₘₐₓ (sampling frequency must exceed twice max signal frequency)",
+      ["Sampling"] = "fs = 1/Ts (sampling frequency = 1/sampling period)",
+      ["Nyquist"] = "fs > 2 * fmax (sampling frequency must exceed twice max signal frequency)",
       ["Phase"] = "φ = 2πf·t (phase in radians)",
     },
     ["Transforms"] = {
-      ["DFT"] = "X[k] = ∑ₙ₌₀ᴺ⁻¹ x[n]·e⁻ʲ²ᵏⁿᵖⁱ/ᴺ",
-      ["IDFT"] = "x[n] = (1/N)·∑ₖ₌₀ᴺ⁻¹ X[k]·eʲ²ᵏⁿᵖⁱ/ᴺ",
-      ["STFT"] = "X(τ,ω) = ∑ₙ₌₋∞∞ x[n]·w[n-τ]·e⁻ʲωⁿ",
+      ["DFT"] = "X[k] = Σ(n=0 to N-1) x[n]·e^(-j2πkn/N)",
+      ["IDFT"] = "x[n] = (1/N)·Σ(k=0 to N-1) X[k]·e^(j2πkn/N)",
+      ["STFT"] = "X(τ,ω) = Σ x[n]·w[n-τ]·e^(-jωn)",
     },
     ["Filters"] = {
       ["LPF (RC)"] = "H(s) = 1/(1+sRC), cutoff = 1/(2πRC)",
       ["HPF (RC)"] = "H(s) = sRC/(1+sRC), cutoff = 1/(2πRC)",
-      ["Butterworth"] = "|H(jω)|² = 1/(1+(ω/ωc)²ⁿ)",
-      ["Biquad"] = "H(z) = (b₀ + b₁z⁻¹ + b₂z⁻²)/(1 + a₁z⁻¹ + a₂z⁻²)",
+      ["Butterworth"] = "|H(jω)|² = 1/(1+(ω/ωc)^2n)",
+      ["Biquad"] = "H(z) = (b0 + b1·z^-1 + b2·z^-2)/(1 + a1·z^-1 + a2·z^-2)",
     },
     ["Oscillators"] = {
       ["Sine"] = "y(t) = A·sin(2πf·t + φ)",
-      ["Complex"] = "e^{jωt} = cos(ωt) + j·sin(ωt)",
+      ["Complex"] = "e^(jωt) = cos(ωt) + j·sin(ωt)",
     },
     ["Windows"] = {
       ["Rectangular"] = "w[n] = 1, 0 ≤ n ≤ N-1",
@@ -30,12 +30,12 @@ function M.dsp_formulas()
       ["Blackman"] = "w[n] = 0.42 - 0.5·cos(2πn/(N-1)) + 0.08·cos(4πn/(N-1))",
     },
     ["Analysis"] = {
-      ["SNR"] = "SNR = 10·log₁₀(Pₛᵢₙₐₗ/Pₙₒᵢₛₑ) dB",
-      ["THD"] = "THD = √(V₂² + V₃² + ... + Vₙ²)/V₁",
-      ["RMSE"] = "RMSE = √((1/N)·∑(yᵢ - ŷᵢ)²)",
+      ["SNR"] = "SNR = 10·log₁₀(Psignal/Pnoise) dB",
+      ["THD"] = "THD = √(V2² + V3² + ... + Vn²)/V1",
+      ["RMSE"] = "RMSE = √((1/N)·Σ(yi - ŷi)²)",
     },
     ["Units"] = {
-      ["dB"] = "dB = 20·log₁₀(V₂/V₁) or 10·log₁₀(P₂/P₁)",
+      ["dB"] = "dB = 20·log₁₀(V2/V1) or 10·log₁₀(P2/P1)",
       ["dBFS"] = "dBFS = 20·log₁₀(|V|/Vfull_scale)",
       ["dBSPL"] = "dBSPL = 20·log₁₀(p/pref), pref = 20 μPa",
     }
@@ -56,20 +56,40 @@ function M.dsp_formulas()
     title_pos = "center",
   })
   
+  -- Function to center text in available width
+  local function center_text(text, available_width)
+    local text_length = vim.fn.strdisplaywidth(text)
+    local padding = math.max(0, math.floor((available_width - text_length) / 2))
+    return string.rep(" ", padding) .. text
+  end
+  
   local lines = {}
   
+  -- Add centered title
+  table.insert(lines, "")
+  table.insert(lines, center_text("DSP FORMULAS REFERENCE", width))
+  table.insert(lines, "")
+  table.insert(lines, center_text(string.rep("─", width - 20), width))
+  table.insert(lines, "")
+  
   for category, maps in pairs(formulas) do
-    table.insert(lines, "# " .. category)
+    -- Center the category headers
+    table.insert(lines, center_text("# " .. category, width))
     table.insert(lines, "")
     
+    -- Create a table-like format for the formulas
     for name, formula in pairs(maps) do
-      table.insert(lines, string.format("%-15s %s", name, formula))
+      -- Don't center the actual formulas - keep them aligned for readability
+      table.insert(lines, string.format("    %-15s %s", name, formula))
     end
     
     table.insert(lines, "")
-    table.insert(lines, "----------------------------------------------------------")
+    table.insert(lines, center_text(string.rep("─", width - 20), width))
     table.insert(lines, "")
   end
+  
+  -- Add centered footer
+  table.insert(lines, center_text("Press q or <Esc> to close", width))
   
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.api.nvim_buf_set_option(buf, "modifiable", false)
@@ -78,17 +98,25 @@ function M.dsp_formulas()
   -- Highlight the headings and formulas
   local line_num = 0
   for _, line in ipairs(lines) do
-    if line:match("^# ") then
+    if line:match("^%s*# ") then
       vim.api.nvim_buf_add_highlight(buf, -1, "Title", line_num, 0, -1)
-    elseif line:match("^%-%-%-%-") then
+    elseif line:match("^%s*─") then
       vim.api.nvim_buf_add_highlight(buf, -1, "Comment", line_num, 0, -1)
-    elseif line:match("^%s*[%w%s%(%)]+%s+") then
-      -- Highlight formula names
-      local name_end = line:find("%s%s")
+    elseif line:match("Press q or") then
+      vim.api.nvim_buf_add_highlight(buf, -1, "Comment", line_num, 0, -1)
+    elseif line:match("^%s*DSP FORMULAS") then
+      vim.api.nvim_buf_add_highlight(buf, -1, "Special", line_num, 0, -1)
+    elseif line:match("^%s+[%w%s%(%)]+%s+") then
+      -- Find the position where the formula name ends and the formula begins
+      local content_start = line:find("%S") or 0
+      local content = line:sub(content_start)
+      local name_end = content:find("%s%s")
+      
       if name_end then
-        vim.api.nvim_buf_add_highlight(buf, -1, "Identifier", line_num, 0, name_end)
+        -- Highlight formula name (add content_start to adjust for leading spaces)
+        vim.api.nvim_buf_add_highlight(buf, -1, "Identifier", line_num, content_start, content_start + name_end)
         -- Highlight formula content
-        vim.api.nvim_buf_add_highlight(buf, -1, "Special", line_num, name_end, -1)
+        vim.api.nvim_buf_add_highlight(buf, -1, "Special", line_num, content_start + name_end, -1)
       end
     end
     line_num = line_num + 1
