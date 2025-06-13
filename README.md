@@ -1,6 +1,31 @@
 # 🚀  Neovim Configuration
 
-A powerful, feature-rich Neovim configuration optimized for audio development, Python, Arduino, and LaTeX, with a focus on productivity and extensibility.
+Before you begin, please ensure you have the latest version of Neovim installed. This configuration is designed to work with Neovim 0.9.0 and above. 
+Also it's very easy, and common, to be a 'vimpostor' and easily drown in configurations and not get actual work done. From experience, work with what you need, and add more as you go,
+or even better, use this configuration as a starting point and reverse engineer it to understand how it works.
+
+A few things to consider: I constantly update functions, and add new features, so not everything might work as expected, especially when a plugin 
+is no longer being suppoerted. My preferred GNU terminal is Alacritty and the GUI of my choice is Neovide. Both are great, but you can use whatever you
+want but for the love of God, almighty, please do not use ChatGPT to generate your configuration without understading it. Understand how it works, then use AI 
+to automate the boring parts. Without further ado, here is a prety **** configuration. Up to you what **** means.
+
+## Why This Configuration?
+When I was in finance and marketing I used SQL and Python for data analysis mostly through the Jupyter Environment, then when I pivoted to engineering I realized how little I knew about how a computer
+actually works, and how to use a terminal. Hence my journey to the world of NeoVim began. I have always enjoyed music production and even though my hearing loss tried to get in the way, here I am, 
+developing audio applications. Think of me as the Vim Beethoven, but with a keyboard instead of a piano.
+
+I started using ChadVim, but I had no idea how vim actully worked, and I was just copying and pasting configurations without understanding them. My job required me to work with audio develpment, and 
+embedded systems, and going back and forth between my NeoVim configuration and the documentation was a pain. I just used the good old VSCode, turns out using an IDE was not ideal for me give the fact
+that I had a potato of a laptop (not anymore - thank you capitalism), and I needed something lightweight, fast, and easy to use. This configuration has everything I use ona daily basis, from a neat 
+dashboard, to LSP support, to Arduino development, and LaTeX integration. It is designed to be extensible, so you can easily add or remove features as needed.
+
+One of my favorite features is my DIY theme switcher, which allows me to change the theme on the fly. People often laugh at me for being excited for the theme switcher, but trust me, it comes in handy
+when it's 3:25am on a Tuesday, and you live in a studio apartment with your girlfriend (hopefully she says yes to the ring situation), and you need to change the theme from light to dark, or whatever the 
+trillions of themes out there.
+
+So yes - enjoy this powerful, feature-rich NeoVim configuration optimized for audio development, Python, Arduino, and LaTeX, with a focus on productivity and extensibility blah, blah, blah. 
+Take into consideration that this will not make you a better engineer, we all still suck at electromagnetism:, and we all still have impostor syndrome, but at least you will have a nice looking NeoVim
+configuration. 
 
 ![Neovim Dashboard](./assets/homepage.png)
 
@@ -17,6 +42,8 @@ A powerful, feature-rich Neovim configuration optimized for audio development, P
 - 🔧 Git Integration with Fugitive and Gitsigns
 - 💻 Terminal Integration with Toggleterm
 - ✅ LSP Support with Mason
+- 🏠 Personalized Dashboard with Alpha
+- 🎨 Personalized Theme Switcher with :Atheme command 
 
 ## 🔧 Prerequisites
 
@@ -44,6 +71,10 @@ mkdir -p ~/.config/nvim/UltiSnips
 python3 -m venv ~/.virtualenvs/neovim
 source ~/.virtualenvs/neovim/bin/activate
 pip install pynvim
+# or use conda environment
+conda create -n nvim python=3.8 -y
+conda activate nvim
+conda install neovim -y
 
 # Install system dependencies
 brew install neovim ripgrep fd
@@ -59,15 +90,39 @@ arduino-cli core install esp32:esp32
 
 ## 🔧 Configuration Structure
 
-```
+``````
 ~/.config/nvim/
-├── init.lua                 # Main configuration file
-├── lua/
-│   └── plugins.lua         # Plugin configurations
-└── UltiSnips/
-    └── tex.snippets        # LaTeX snippets
-```
+│  
+├── init.lua (main configuration file)
+├── init.lua.bak
+├── lazy-lock.json
+├── lua
+│   ├── calanuzao (custom namespace)
+│   │   ├── compat.lua
+│   │   ├── dsp.lua
+│   │   ├── globals.lua
+│   │   ├── options.lua
+│   │   └── remaps.lua
+│   ├── plugins (plugin configurations)
+│   │   ├── coc.lua
+│   │   ├── harpoon.lua
+│   │   ├── lsp.lua
+│   │   ├── neoclip.lua
+│   │   ├── neoscroll.lua
+│   │   ├── nvim-dap-vscode-js.lua
+│   │   ├── nvim-ufo.lua
+│   │   ├── obsidian.lua
+│   │   ├── telescope.lua
+│   │   ├── tmux.lua
+│   │   ├── vim-matlab.lua
+│   │   └── VimTeX.lua
+│   ├── plugins.lua
+│   └── plugins.lua.bak
+├── README.md
+└── UltiSnips
+    └── tex.snippets
 
+``````
 ## ⚡ Quick Start
 
 1. Open a LaTeX file:
@@ -118,6 +173,13 @@ Leader key: `Space`
 - `<Space>ls` - Toggle continuous compilation
 - `Ctrl+l` - Fix last spelling mistake
 
+### Favorite Commands 
+- `:Atheme` - Switch themes
+- `:ArduinoVerify` - Verify Arduino sketch
+- `:ArduinoUpload` - Upload to Arduino board
+- `:VimtexCompile` - Compile LaTex Documentation
+- `:VimtexView'` - View LaTex Documentation
+
 ## 🔧 Troubleshooting
 
 1. Plugin Installation Issues:
@@ -153,5 +215,3 @@ MIT License - See [LICENSE](LICENSE) file for details.
 - [VimTeX Documentation](https://github.com/lervag/vimtex)
 - [Arduino CLI Documentation](https://arduino.github.io/arduino-cli/)
 - [LaTeX Documentation](https://www.latex-project.org/help/documentation/)
-
-
