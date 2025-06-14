@@ -1,4 +1,48 @@
 return {
+  -- homepage tips 
+{
+  "TobinPalmer/Tip.nvim",
+  event = "VimEnter",
+  init = function()
+    -- Default config
+    --- @type Tip.config
+    require("tip").setup({
+      seconds = 2,
+      title = "Tip!",
+      url = "https://vtip.43z.one", -- Or https://vimiscool.tech/neotip
+    })
+  end,
+},
+  -- scrollbar
+{
+    'Xuyuanp/scrollbar.nvim',
+    -- no setup required
+    init = function()
+        local group_id = vim.api.nvim_create_augroup('scrollbar_init', { clear = true })
+
+        vim.api.nvim_create_autocmd({ 'BufEnter', 'WinScrolled', 'WinResized' }, {
+            group = group_id,
+            desc = 'Show or refresh scrollbar',
+            pattern = { '*' },
+            callback = function()
+                require('scrollbar').show()
+            end,
+        })
+    end,
+},
+  -- finder window 
+{
+  'simonmclean/triptych.nvim',
+  dependencies = {
+    'nvim-lua/plenary.nvim', -- required
+    'nvim-tree/nvim-web-devicons', -- optional for icons
+    'antosha417/nvim-lsp-file-operations' -- optional LSP integration
+  },
+  opts = {}, -- config options here
+  keys = {
+    { '<leader>-', ':Triptych<CR>' },
+  },
+},
   -- transparent background warning fix
 {
   "rcarriga/nvim-notify",
@@ -373,15 +417,21 @@ return {
       end,
     },
   },
+-- Alpha Dashboard with custom git contribution visualization
 {
   "goolord/alpha-nvim",
   event = "VimEnter",
-  dependencies = { "nvim-tree/nvim-web-devicons" },
+  dependencies = { 
+    "nvim-tree/nvim-web-devicons",
+    "nvim-lua/plenary.nvim"  -- For async operations and path handling
+  },
   config = function()
     local alpha = require("alpha")
     local dashboard = require("alpha.themes.dashboard")
-
-    -- Set header with Calodii Studios logo
+    local plenary_path = require("plenary.path")
+    local Job = require("plenary.job")
+    
+    -- Define your custom logo
     dashboard.section.header.val = {
       [[⣿⣿⣿⣿⣿⣶⣄⣠⣴⣶⣶⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⡇⠀⣿⣿⠆⢰⣿⣷⠀ ]],
       [[⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⢀⣄⣀⠀⠀⠀⣀⣠⣄⣀⣀⣀⠀⠸⣿⣿⠀⠀⠀⢀⡀⠀⣀⡀⠀⠀⠀⠀⣀⣠⣄⣸⣿⡇⠀⢈⣉⡀⠀⣉⣁⠀ ]],
@@ -389,35 +439,221 @@ return {
       [[⠀⢸⣿⣿⣿⡛⣿⣿⣷⣿⣿⣿⠟⠀⣿⣿⠀⠀⠀⠀⠀⢸⣿⡏⠀⠀⠀⢻⣿⡆⠀⢹⣿⡇⢸⣿⡟⠀⠀⠀⠹⣿⣧⢸⣿⡏⠀⠀⠀⣿⣿⡄⠈⣿⣿⠀⢸⣿⡇ ]],
       [[⠀⠘⠿⣿⣿⣿⣾⣿⣿⣿⠏⠁⠀⠀⢻⣿⣧⡀⠀⠀⣀⠀⣿⣿⣄⠀⠀⢸⣿⣇⠀⢸⣿⣧⠘⣿⣿⣄⠀⠀⣠⣿⡟⠘⣿⣿⣄⠀⠀⢻⣿⡇⠀⣿⣿⡄⠘⣿⣧ ]],
       [[⠀⠀  ⢸⣿⣿⣿⡏⣿⠇⠀⠀⠀⠀⠙⠿⣿⣿⣿⡿⠆⠈⠻⢿⣿⠀⠘⣿⣿⣷⠘⣿⣿⠀⠘⠻⣿⡄⠀⣿⠿⠁⠀⠘⠿⣿⣿⠀⠸⣿⡷⠀⢻⣿⡇⠀⣿⣿⠀]],
-      [[                                                                    ]],
-      [[                        calodii studios 🐝                          ]],
-      [[                                                                    ]],
+      [[                                                            ]],
+      [[                       𝒸𝒶𝓁𝑜𝒹𝒾𝒾 𝓈𝓉𝓊𝒹𝒾𝑜𝓈 🐝                   ]],
+      [[                                                            ]],
     }
-
+    
+    -- Create a function to generate git contribution heatmap
+    local function generate_git_heatmap()
+      -- Define the characters for the heatmap
+      local empty = "□"
+      local filled = { "■", "■", "■", "■", "■" }
+      local days = { "S", "M", "T", "W", "T", "F", "S" }
+      local months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
+      
+      -- Function to get contribution data using git log
+      local function get_contribution_data()
+        local contributions = {}
+        local today = os.date("*t")
+        local one_year_ago = os.date("*t", os.time() - 365 * 24 * 60 * 60)
+        
+        -- Format dates for git command
+        local start_date = string.format("%d-%02d-%02d", one_year_ago.year, one_year_ago.month, one_year_ago.day)
+        local end_date = string.format("%d-%02d-%02d", today.year, today.month, today.day)
+        
+        -- Check if we're in a git repository
+        local is_git_repo = vim.fn.system("git rev-parse --is-inside-work-tree 2>/dev/null")
+        if vim.v.shell_error ~= 0 then
+          return nil
+        end
+        
+        -- Get git contributions for the past year
+        local output = vim.fn.system(string.format(
+          "git log --date=short --format=format:%%ad --after=%s --before=%s", 
+          start_date, 
+          end_date
+        ))
+        
+        -- Count contributions by date
+        for date in output:gmatch("%d%d%d%d%-%d%d%-%d%d") do
+          contributions[date] = (contributions[date] or 0) + 1
+        end
+        
+        return contributions
+      end
+      
+      -- Get contributions or return nil if not in a git repo
+      local contributions = get_contribution_data()
+      if not contributions then
+        return nil
+      end
+      
+      -- Generate heatmap grid
+      local grid = {}
+      local current_date = os.date("*t")
+      local date_iter = os.date("*t", os.time() - 365 * 24 * 60 * 60)
+      local week_idx = 1
+      local day_idx = tonumber(os.date("%w", os.time() - 365 * 24 * 60 * 60)) + 1
+      
+      -- Initialize grid with empty cells
+      for i = 1, 53 do
+        grid[i] = {}
+        for j = 1, 7 do
+          grid[i][j] = 0
+        end
+      end
+      
+      -- Fill grid with contribution data
+      while os.time(date_iter) <= os.time(current_date) do
+        local date_str = string.format("%d-%02d-%02d", date_iter.year, date_iter.month, date_iter.day)
+        local count = contributions[date_str] or 0
+        
+        -- Normalize count to fit in our intensity levels (0-4)
+        local intensity = 0
+        if count > 0 then
+          intensity = math.min(math.floor(count / 2) + 1, #filled)
+        end
+        
+        grid[week_idx][day_idx] = intensity
+        
+        -- Move to next day
+        date_iter.day = date_iter.day + 1
+        if date_iter.day > os.date("*t", os.time({year=date_iter.year, month=date_iter.month+1, day=0})).day then
+          date_iter.month = date_iter.month + 1
+          date_iter.day = 1
+          if date_iter.month > 12 then
+            date_iter.year = date_iter.year + 1
+            date_iter.month = 1
+          end
+        end
+        
+        -- Update grid indices
+        day_idx = day_idx + 1
+        if day_idx > 7 then
+          day_idx = 1
+          week_idx = week_idx + 1
+        end
+      end
+      
+      -- Render the heatmap as text
+      local heatmap = {}
+      
+      -- Add day labels
+      local days_line = "    "
+      for i = 1, 7 do
+        days_line = days_line .. days[i] .. " "
+      end
+      table.insert(heatmap, days_line)
+      table.insert(heatmap, "")
+      
+      -- Add months label and grid
+      local month_label = "    "
+      local prev_month = 0
+      
+      for i = 1, 53 do
+        local week_str = ""
+        -- Add month labels where they start
+        local first_day_of_week = os.date("*t", os.time() - (365 - (i-1)*7) * 24 * 60 * 60)
+        if first_day_of_week.month ~= prev_month then
+          month_label = month_label .. months[first_day_of_week.month] .. "                  "
+          prev_month = first_day_of_week.month
+        end
+        
+        -- Format week number
+        local week_num = string.format("%2d", i)
+        week_str = week_str .. week_num .. ": "
+        
+        -- Add cells for each day
+        for j = 1, 7 do
+          local intensity = grid[i][j] or 0
+          if intensity == 0 then
+            week_str = week_str .. empty .. " "
+          else
+            week_str = week_str .. filled[intensity] .. " "
+          end
+        end
+        
+        table.insert(heatmap, week_str)
+      end
+      
+      -- Insert month labels at the top
+      table.insert(heatmap, 2, month_label)
+      
+      -- Add a title
+      table.insert(heatmap, 1, "")
+      table.insert(heatmap, 1, "                Git Contributions")
+      
+      return heatmap
+    end
+    
     -- Set menu with styled icons
     dashboard.section.buttons.val = {
-      dashboard.button("f", "󰈞  Find file", ":Telescope find_files <CR>"),
-      dashboard.button("n", "Σ  New file", ":ene <BAR> startinsert <CR>"),
-      dashboard.button("r", "Ω  Recently used files", ":Telescope oldfiles <CR>"),
-      dashboard.button("t", "φ  Find text", ":Telescope live_grep <CR>"),
-      dashboard.button("c", "∫  Configuration", ":e $MYVIMRC <CR>"),
-      dashboard.button("m", "⌨  Keymaps", ":e ~/.config/nvim/lua/calanuzao/remaps.lua <CR>"), 
-      dashboard.button("l", "󰒲  Lazy", ":Lazy<CR>"),
-      dashboard.button("q", "󰗼  Quit Neovim", ":qa<CR>"),
+      dashboard.button("f", "⟦⟧     Find file",               ":Telescope find_files <CR>"),        -- single-width replacement for 🔍
+      dashboard.button("n", "Σ      New file",                ":ene <BAR> startinsert <CR>"),
+      dashboard.button("r", "Ω      Recently used files",     ":Telescope oldfiles <CR>"),
+      dashboard.button("t", "φ      Find text",               ":Telescope live_grep <CR>"),
+      dashboard.button("c", "∫      Configuration",           ":e $MYVIMRC <CR>"),
+      dashboard.button("m", "⌨      Keymaps",                 ":e ~/.config/nvim/lua/calanuzao/remaps.lua <CR>"),
+      dashboard.button("p", "π      Plugins",                 ":e ~/.config/nvim/lua/plugins.lua <CR>"),
+      dashboard.button("g", "♾️     Git Profile",             ":lua ShowGitContributions()<CR>"),   -- single-width replacement for 🧬
+      dashboard.button("l", "💤     Lazy",                    ":Lazy<CR>"),                         -- single-width replacement for 💤
+      dashboard.button("q", "🚪     Quit Neovim",             ":qa<CR>"),                           -- single-width replacement for 🪂
     }
 
-    -- Make it darker by using different highlight groups
+    -- Create global function to show git contributions in a floating window
+    _G.ShowGitContributions = function()
+      local heatmap = generate_git_heatmap()
+      if not heatmap then
+        vim.notify("Not in a git repository or no contribution data available", vim.log.levels.WARN)
+        return
+      end
+      
+      -- Calculate window dimensions
+      local width = 60
+      local height = #heatmap + 2
+      local row = math.floor((vim.o.lines - height) / 2)
+      local col = math.floor((vim.o.columns - width) / 2)
+      
+      -- Create the floating window
+      local buf = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, heatmap)
+      
+      local win = vim.api.nvim_open_win(buf, true, {
+        relative = "editor",
+        width = width,
+        height = height,
+        row = row,
+        col = col,
+        style = "minimal",
+        border = "rounded"
+      })
+      
+      -- Set buffer options
+      vim.api.nvim_buf_set_option(buf, "modifiable", false)
+      vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
+      
+      -- Set highlighting for the heatmap
+      vim.api.nvim_win_set_option(win, "winhl", "Normal:Normal")
+      
+      -- Add keymaps to close the window
+      vim.api.nvim_buf_set_keymap(buf, "n", "q", ":close<CR>", {silent = true, noremap = true})
+      vim.api.nvim_buf_set_keymap(buf, "n", "<Esc>", ":close<CR>", {silent = true, noremap = true})
+    end
+
+    -- Styling for the sections
     dashboard.section.header.opts.hl = "Comment"
     dashboard.section.buttons.opts.hl = "Keyword"
     dashboard.section.buttons.opts.hl_shortcut = "LineNr"
 
+    -- Dynamic footer with stats
     local function footer()
       local stats = require("lazy").stats()
       local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
       
       local date = os.date("%a %d %b")
       local time = os.date("%H:%M:%S")
-      
+
       return "⚡ Neovim loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms .. "ms"
           .. "  |  " .. date .. "  |  " .. time
     end
@@ -425,7 +661,7 @@ return {
     dashboard.section.footer.val = footer()
     dashboard.section.footer.opts.hl = "NonText"
 
-    -- Add more padding for better spacing
+    -- Layout with padding
     dashboard.config.layout = {
       { type = "padding", val = 3 },
       dashboard.section.header,
