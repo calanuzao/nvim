@@ -375,25 +375,27 @@ vim.cmd([[
 ]])
 
 -- File Explorer
+-- ctrl+n toggles the file explorer sidebar
+-- ctrl+j and ctrl+k navigate between tbs
 require'nvim-tree'.setup {
-  update_cwd = true,  -- Keep the tree's root updated with the current working directory
+  update_cwd = true,  
   update_focused_file = {
-    enable = true,    -- Enable this to let the tree update when switching between files
-    update_cwd = true, -- Update the cwd when the file is updated
+    enable = true,    
+    update_cwd = true, 
   },
   actions = {
     open_file = {
       window_picker = {
-        enable = false,  -- Disable window picker for cleaner behavior
+        enable = false,  
       },
-      quit_on_open = false,  -- Keep the tree open when opening files
-      resize_window = true,  -- Resize the tree when opening a file
+      quit_on_open = false,  
+      resize_window = true,  
     },
   },
   on_attach = function(bufnr)
     local api = require('nvim-tree.api')
     
-    -- Override default Enter behavior to open files in new tabs
+    -- override default Enter behavior to open files in new tabs
     vim.keymap.set('n', '<CR>', function()
       local node = api.tree.get_node_under_cursor()
       if node.type == 'file' then
@@ -403,7 +405,7 @@ require'nvim-tree'.setup {
       end
     end, { buffer = bufnr, noremap = true, silent = true, nowait = true })
     
-    -- Optional: Add a specific keybind for opening in same window
+    -- specific keybind for opening in same window
     vim.keymap.set('n', 'o', function()
       local node = api.tree.get_node_under_cursor()
       api.node.open.edit()
@@ -411,7 +413,7 @@ require'nvim-tree'.setup {
   end,
 }
 
--- Keep your existing toggle keybind
+-- toggle keybind
 vim.api.nvim_set_keymap('n', '<C-n>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
 
 -- Optional: Add helpful tab navigation keymaps
@@ -430,7 +432,7 @@ vim.cmd [[
   highlight NonText ctermbg=none
 ]]
 
--- Call this function at the end of initialization to load the last used theme
+-- loads the last used theme
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     load_last_theme()
@@ -484,11 +486,11 @@ vim.api.nvim_create_user_command('Specs', function()
 end, {})
 
 -- Dashboard Configuration
-vim.api.nvim_create_autocmd('BufDelete', {
-  callback = function()
-    if #vim.fn.getbufinfo({ buflisted = 1 }) == 0 then
-      vim.cmd('Dashboard')
-    end
-  end
-})
+--vim.api.nvim_create_autocmd('BufDelete', {
+--   callback = function()
+--    if #vim.fn.getbufinfo({ buflisted = 1 }) == 0 then
+--      vim.cmd('Dashboard')
+--    end
+--  end
+--})
 

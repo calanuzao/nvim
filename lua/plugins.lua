@@ -1,4 +1,11 @@
 return {
+  -- 8bit sound effects
+{
+  "jackplus-xyz/player-one.nvim",
+  ---@type PlayerOne.Config
+  opts = {
+  }
+},
   -- homepage tips 
 {
   "TobinPalmer/Tip.nvim",
@@ -266,48 +273,72 @@ return {
     config = function()
     end
   },
+  -- Terminal Management
   {
     'akinsho/toggleterm.nvim',
     config = function()
-        require("toggleterm").setup{
-            size = 120,
-            open_mapping = "<c-\\>",
-            hide_numbers = true,
-            shade_filetypes = {},
-            shade_terminals = true,
-            shading_factor = 2,
-            start_in_insert = true,
-            insert_mappings = true,
-            persist_size = true,
-            direction = "float",
-            close_on_exit = false,
-            shell = vim.o.shell,
-            float_opts = {
-                border = "curved",
-                winblend = 0,
-                highlights = {
-                    border = "Normal",
-                    background = "Normal",
-                },
-            }
-        }
+      -- Store default cursor style on startup
+      vim.g.default_guicursor = vim.opt.guicursor:get()
+      
+      require("toggleterm").setup{
+        size = 120,
+        open_mapping = [[<C-\>]],
+        hide_numbers = true,
+        shade_filetypes = {},
+        shade_terminals = true,
+        shading_factor = 2,
+        start_in_insert = true,
+        insert_mappings = true,
+        persist_size = true,
+        direction = "float", -- "horizontal", "vertical", "tab", "float"
+        close_on_exit = false,
+        shell = vim.o.shell,
+        float_opts = {
+          border = "curved",
+          winblend = 0,
+          highlights = {
+            border = "Normal",
+            background = "Normal",
+          },
+        },
+        -- Set line cursor for all modes when terminal opens
+        on_open = function(term)
+          -- This sets a vertical line cursor for ALL modes (a:ver25)
+          vim.api.nvim_buf_set_option(term.bufnr, "guicursor", "a:ver25-Cursor")
+        end,
+        -- Reset cursor when terminal is hidden
+        on_exit = function()
+          vim.opt.guicursor = vim.g.default_guicursor
+        end,
+      }
 
-        -- keymaps for toggleterm
-        local keymap = vim.api.nvim_set_keymap
-        local opts = { noremap = true, silent = true }
+      -- keymaps for toggleterm
+      local keymap = vim.api.nvim_set_keymap
+      local opts = { noremap = true, silent = true }
 
-        keymap('t', '<esc>', '<C-\\><C-n>', opts)
+      -- Escape from terminal mode
+      keymap('t', '<esc>', '<C-\\><C-n>', opts)
+
+      -- Alternative approach: Use autocmd for ToggleTerm buffers
+      vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
+        pattern = "term://*toggleterm#*",
+        callback = function()
+          vim.opt_local.guicursor = "a:ver25-Cursor"
+        end
+      })
+
+      -- Reset when leaving terminal buffer
+      vim.api.nvim_create_autocmd("BufLeave", {
+        pattern = "term://*toggleterm#*",
+        callback = function()
+          vim.opt.guicursor = vim.g.default_guicursor
+        end
+      })
     end
   },
-  {
-    "chentoast/marks.nvim",
-    config = function()
-      require("marks").setup({
-        default_mappings = true,
-      })
-    end,
+  { 
+    "tpope/vim-projectionist" 
   },
-  { "tpope/vim-projectionist" },
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
@@ -589,16 +620,17 @@ return {
     
     -- Set menu with styled icons
     dashboard.section.buttons.val = {
-      dashboard.button("f", "⟦⟧     Find file",               ":Telescope find_files <CR>"),        -- single-width replacement for 🔍
-      dashboard.button("n", "Σ      New file",                ":ene <BAR> startinsert <CR>"),
-      dashboard.button("r", "Ω      Recently used files",     ":Telescope oldfiles <CR>"),
-      dashboard.button("t", "φ      Find text",               ":Telescope live_grep <CR>"),
+      dashboard.button("f", "⟦⟧     Find File",               ":Telescope find_files <CR>"),        
+      dashboard.button("n", "Σ      New File",                ":ene <BAR> startinsert <CR>"),
+      dashboard.button("r", "Ω      Recent Files",            ":Telescope oldfiles <CR>"),
+      dashboard.button("t", "φ      Find Text",               ":Telescope live_grep <CR>"),
       dashboard.button("c", "∫      Configuration",           ":e $MYVIMRC <CR>"),
       dashboard.button("m", "⌨      Keymaps",                 ":e ~/.config/nvim/lua/calanuzao/remaps.lua <CR>"),
       dashboard.button("p", "π      Plugins",                 ":e ~/.config/nvim/lua/plugins.lua <CR>"),
-      dashboard.button("g", "♾️     Git Profile",             ":lua ShowGitContributions()<CR>"),   -- single-width replacement for 🧬
-      dashboard.button("l", "💤     Lazy",                    ":Lazy<CR>"),                         -- single-width replacement for 💤
-      dashboard.button("q", "🚪     Quit Neovim",             ":qa<CR>"),                           -- single-width replacement for 🪂
+      dashboard.button("g", "♾️     Git Profile",             ":lua ShowGitContributions()<CR>"),   
+      dashboard.button("o", "💎     Obsidian Vault",          ":e ~/Documents/ObsidianVault/ <CR>"),
+      dashboard.button("l", "💤     Lazy",                    ":Lazy<CR>"),                         
+      dashboard.button("q", "🚪     Quit",                    ":qa<CR>"),                           
     }
 
     -- Create global function to show git contributions in a floating window

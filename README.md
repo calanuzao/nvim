@@ -155,6 +155,12 @@ Leader key: `Space`
 - `<Space>fg` - Live grep
 - `<Space>fb` - Browse buffers
 
+### File Explorer
+- `Ctrl+n` - Toggle Finder
+
+### Terminal
+- `Ctrl+\` - Toggle Terminal
+
 ### Git
 - `<Space>gs` - Git status
 - `<Space>gc` - Git commit
@@ -189,6 +195,7 @@ nvim --headless "+Lazy! sync" +qa
 ```
 
 2. LaTeX Preview:
+- LaTex preview does not work with Alacritty terminal, iTerm2 and Kitty work fine.
 - Ensure Zathura is installed
 - Check VimTeX configuration
 - Verify LaTeX installation
@@ -202,7 +209,7 @@ nvim --headless "+Lazy! sync" +qa
 
 MIT License - See [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🙌🏻 Acknowledgments
 
 - Neovim community
 - Plugin authors
