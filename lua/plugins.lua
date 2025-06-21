@@ -1,10 +1,27 @@
+-- leader key is space bar (some keymappings need to be changed for better configuration)
+
 return {
+  -- indentation
+  {
+    'vidocqh/auto-indent.nvim',
+    opts = {},
+  },
+  -- beeps sound effects (sound folder is required + plugin configuration)
+{
+    "EggbertFluffle/beepboop.nvim",
+    max_sounds = 20,
+    sound_map = {
+
+    }
+  },
   -- 8bit sound effects
 {
   "jackplus-xyz/player-one.nvim",
   ---@type PlayerOne.Config
   opts = {
-  }
+      master_volume = 0.06,
+      theme = "chiptune",
+    },
 },
   -- homepage tips 
 {
@@ -122,7 +139,7 @@ return {
     vim.api.nvim_set_keymap('i', '<C-N>', 'copilot#Next()', { noremap = true, silent = true })
     vim.api.nvim_set_keymap('i', '<C-P>', 'copilot#Previous()', { noremap = true, silent = true })
     -- additional behavior
-    vim.g.copilot_auto_trigger = true  -- Automatically trigger suggestions as you type
+    vim.g.copilot_auto_trigger = false  -- Automatically trigger suggestions as you type
     vim.g.copilot_accept_key = '<C-l>' -- Use <C-l> to accept suggestions
   end 
 },
@@ -991,6 +1008,178 @@ return {
 
 
   -- THEMES
+  -- GitHub themes
+  {
+  "cocopon/iceberg.vim",
+  lazy = false,
+  priority = 998,
+  },
+  {
+    "sainnhe/edge",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "folke/lsp-colors.nvim",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "savq/melange-nvim",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "EdenEast/nightfox.nvim",  
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "olimorris/onedarkpro.nvim",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "arcticicestudio/nord-vim",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "AlexvZyl/nordic.nvim",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "lifepillar/vim-solarized8",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "projekt0n/github-nvim-theme",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "ayu-theme/ayu-vim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "marko-cerovac/material.nvim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "sainnhe/gruvbox-material",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "drewtempelmeyer/palenight.vim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "bluz71/vim-moonfly-colors",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "bluz71/vim-nightfly-colors",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "kdheepak/monochrome.nvim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "nyoom-engineering/oxocarbon.nvim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "chriskempson/tomorrow-theme",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "jnurmine/Zenburn",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "robertmeta/nofrils",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "NTBBloodbath/doom-one.nvim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "NAlexPear/Spacegray.nvim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "shaunsingh/moonlight.nvim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "Mofiqul/vscode.nvim",
+    lazy = false,
+    priority = 999,
+  },
+  {
+    "vim-scripts/wombat",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "olivertaylor/vacme",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "TroyFletcher/vim-colors-synthwave",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "danilo-augusto/vim-afterglow",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "p00f/alabaster.nvim",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "pineapplegiant/spaceduck",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "ntk148v/komau.vim",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "lunarvim/horizon.nvim",
+    lazy = false,
+    priority = 998,
+  },
+  {
+    "challenger-deep-theme/vim",
+    name = "challenger-deep",
+    lazy = false,
+    priority = 998,
+  },
   {
     "scottmckendry/cyberdream.nvim",
     lazy = false,
@@ -1153,16 +1342,43 @@ return {
       })
     end,
   },
+  -- debugging code
   {
     "mfussenegger/nvim-dap",
     dependencies = {
+      -- DAP UI
       {
         "rcarriga/nvim-dap-ui",
-        "nvim-neotest/nvim-nio",
-        config = function(_, opts)
+        dependencies = { "nvim-neotest/nvim-nio" },
+        config = function()
           local dap = require("dap")
           local dapui = require("dapui")
-          dapui.setup(opts)
+          
+          dapui.setup({
+            -- ui setup customization
+            layouts = {
+              {
+                elements = {
+                  { id = "scopes", size = 0.25 },
+                  { id = "breakpoints", size = 0.25 },
+                  { id = "stacks", size = 0.25 },
+                  { id = "watches", size = 0.25 },
+                },
+                size = 40,
+                position = "left",
+              },
+              {
+                elements = {
+                  { id = "repl", size = 0.5 },
+                  { id = "console", size = 0.5 },
+                },
+                size = 10,
+                position = "bottom",
+              },
+            },
+          })
+          
+          -- DAP listeners
           dap.listeners.after.event_initialized["dapui_config"] = function()
             dapui.open({})
           end
@@ -1172,31 +1388,142 @@ return {
           dap.listeners.before.event_exited["dapui_config"] = function()
             dapui.close({})
           end
+          
+          -- breakpoint icon
+          vim.fn.sign_define("DapBreakpoint", { text = "🐝", texthl = "DiagnosticSignError", linehl = "", numhl = "" })
         end,
       },
+      
+      -- DAP Virtual Text for better visualization
+      {
+        "theHamsta/nvim-dap-virtual-text",
+        config = function()
+          require("nvim-dap-virtual-text").setup({
+            enabled = true,
+            enabled_commands = true,
+            highlight_changed_variables = true,
+            highlight_new_as_changed = true,
+            commented = false,
+            show_stop_reason = true,
+            virt_text_pos = 'eol',
+          })
+        end,
+      },
+      
+      -- Mason DAP integration for auto-installing adapters
+      {
+        "jay-babu/mason-nvim-dap.nvim",
+        dependencies = "mason.nvim",
+        cmd = { "DapInstall", "DapUninstall" },
+        config = function()
+          local mason_dap = require("mason-nvim-dap")
+          
+          mason_dap.setup({
+            automatic_installation = true,
+            ensure_installed = { "cppdbg" },
+            handlers = {
+              function(config)
+                mason_dap.default_setup(config)
+              end,
+            },
+          })
+          
+          -- C/C++ DAP configurations
+          local dap = require("dap")
+          dap.configurations.c = {
+            {
+              name = "Launch file",
+              type = "cppdbg",
+              request = "launch",
+              program = function()
+                return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+              end,
+              cwd = "${workspaceFolder}",
+              stopAtEntry = false,
+              MIMode = "lldb",
+            },
+            {
+              name = "Attach to lldbserver :1234",
+              type = "cppdbg",
+              request = "launch",
+              MIMode = "lldb",
+              miDebuggerServerAddress = "localhost:1234",
+              miDebuggerPath = "/usr/bin/lldb",
+              cwd = "${workspaceFolder}",
+              program = function()
+                return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+              end,
+            },
+          }
+          
+          -- same configurations for C++
+          dap.configurations.cpp = dap.configurations.c
+        end,
+      },
+      
+      -- Ruby DAP integration
       {
         "suketa/nvim-dap-ruby",
         config = function()
           require("dap-ruby").setup()
         end,
       },
-      {
-        "theHamsta/nvim-dap-virtual-text",
-        opts = {},
+      
+      -- Lua debugging
+      { 
+        "jbyuki/one-small-step-for-vimkind",
       },
-      {
-        "jay-babu/mason-nvim-dap.nvim",
-        dependencies = "mason.nvim",
-        cmd = { "DapInstall", "DapUninstall" },
-        opts = {
-          automatic_installation = true,
-          handlers = {},
-          ensure_installed = {},
-        },
-      },
-      { "jbyuki/one-small-step-for-vimkind", module = "osv" },
     },
+    
+    -- Key Mappings for DAP
+    keys = {
+      -- Debugger group
+      { "<leader>d", desc = "Debugger", mode = { "n" } },
+      
+      -- Toggle breakpoint
+      { "<leader>dt", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
+      
+      -- Continue/start debugging
+      { "<leader>dc", function() require("dap").continue() end, desc = "Continue" },
+      
+      -- Step into
+      { "<leader>di", function() require("dap").step_into() end, desc = "Step Into" },
+      
+      -- Step over
+      { "<leader>do", function() require("dap").step_over() end, desc = "Step Over" },
+      
+      -- Step out
+      { "<leader>du", function() require("dap").step_out() end, desc = "Step Out" },
+      
+      -- Open REPL
+      { "<leader>dr", function() require("dap").repl.open() end, desc = "Open REPL" },
+      
+      -- Run last
+      { "<leader>dl", function() require("dap").run_last() end, desc = "Run Last" },
+      
+      -- Terminate debug session
+      { "<leader>dq", function() 
+          require("dap").terminate()
+          require("dapui").close({})
+        end, 
+        desc = "Terminate" 
+      },
+      
+      -- List breakpoints
+      { "<leader>db", function() require("dap").list_breakpoints() end, desc = "List Breakpoints" },
+      
+      -- Set exception breakpoints
+      { "<leader>de", function() require("dap").set_exception_breakpoints({"all"}) end, desc = "Exception Breakpoints" },
+    },
+    
+    config = function()
+      -- Any additional DAP configuration can go here
+      local dap = require("dap")
+      
+      -- You can add custom adapters here if needed
+    end,
   },
+  -- Statusline
   {
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -1224,6 +1551,7 @@ return {
       })
     end,
   },
+  -- Add/change/delete surrounding delimiter pairs 
   {
     "kylechui/nvim-surround",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
@@ -1372,7 +1700,9 @@ return {
     end,
     opts = {},
   },
-  { "nvim-telescope/telescope-live-grep-args.nvim" },
+  { 
+    "nvim-telescope/telescope-live-grep-args.nvim" 
+  },
   {
     "aaronhallaert/advanced-git-search.nvim",
     dependencies = {

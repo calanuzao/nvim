@@ -48,9 +48,119 @@ vim.api.nvim_create_user_command('Atheme', function(opts)
     return ok
   end
   
-  -- List of supported themes with their setup functions
+  -- =============================================
+  -- LIST OF SUPPORTED THEMES WITH SETUP FUNCTIONS
+  -- =============================================
   local themes = {
-    -- Base Themes
+    -- Iceberg Theme
+    ["iceberg"] = function() 
+      return theme_exists("iceberg") and vim.cmd("colorscheme iceberg") or false
+    end,
+    
+    -- Edge Theme
+    ["edge"] = function() 
+      if theme_exists("edge") then
+        vim.g.edge_style = 'default' -- default, aura, neon
+        vim.o.background = "dark"
+        vim.cmd("colorscheme edge") 
+        return true
+      end
+      return false
+    end,
+    ["edge-light"] = function() 
+      if theme_exists("edge") then
+        vim.o.background = "light"
+        vim.cmd("colorscheme edge") 
+        return true
+      end
+      return false
+    end,
+    
+    -- Melange Theme
+    ["melange"] = function() 
+      if theme_exists("melange") then
+        vim.o.background = "dark"
+        vim.cmd("colorscheme melange") 
+        return true
+      end
+      return false
+    end,
+    ["melange-light"] = function() 
+      if theme_exists("melange") then
+        vim.o.background = "light"
+        vim.cmd("colorscheme melange") 
+        return true
+      end
+      return false
+    end,
+    
+    -- OneDarkPro Theme
+    ["onedarkpro"] = function() 
+      if theme_exists("onedarkpro") then
+        vim.cmd("colorscheme onedarkpro") 
+        return true
+      end
+      return false
+    end,
+    
+    -- Nord-Vim Theme (different from nord)
+    ["nord-vim"] = function() 
+      return theme_exists("nord-vim") and vim.cmd("colorscheme nord") or false
+    end,
+    
+    -- Nordic Theme
+    ["nordic"] = function() 
+      return theme_exists("nordic") and vim.cmd("colorscheme nordic") or false
+    end,
+    
+    -- Monochrome Theme
+    ["monochrome"] = function() 
+      return theme_exists("monochrome") and vim.cmd("colorscheme monochrome") or false
+    end,
+    
+    -- Nofrils Theme
+    ["nofrils"] = function() 
+      return theme_exists("nofrils") and vim.cmd("colorscheme nofrils-dark") or false
+    end,
+    ["nofrils-light"] = function() 
+      return theme_exists("nofrils") and vim.cmd("colorscheme nofrils-light") or false
+    end,
+    
+    -- Doom One Theme
+    ["doom-one"] = function() 
+      return theme_exists("doom-one") and vim.cmd("colorscheme doom-one") or false
+    end,
+    
+    -- Spacegray Theme
+    ["spacegray"] = function() 
+      return theme_exists("Spacegray") and vim.cmd("colorscheme Spacegray") or false
+    end,
+    
+    -- Acme Theme
+    ["acme"] = function() 
+      return theme_exists("acme") and vim.cmd("colorscheme acme") or false
+    end,
+    
+    -- Vacme Theme
+    ["vacme"] = function() 
+      return theme_exists("vacme") and vim.cmd("colorscheme vacme") or false
+    end,
+    
+    -- Spaceduck Theme
+    ["spaceduck"] = function() 
+      return theme_exists("spaceduck") and vim.cmd("colorscheme spaceduck") or false
+    end,
+    
+    -- Komau Theme
+    ["komau"] = function() 
+      return theme_exists("komau") and vim.cmd("colorscheme komau") or false
+    end,
+    
+    -- Challenger Deep Theme
+    ["challenger-deep"] = function() 
+      return theme_exists("challenger_deep") and vim.cmd("colorscheme challenger_deep") or false
+    end,
+    -- Catppuccin Variants
     ["catppuccin"] = function() 
       if theme_exists("catppuccin") then
         vim.g.catppuccin_flavour = "mocha" -- latte, frappe, macchiato, mocha
@@ -91,6 +201,8 @@ vim.api.nvim_create_user_command('Atheme', function(opts)
       end
       return false
     end,
+    
+    -- Tokyo Night Variants
     ["tokyonight"] = function() 
       if theme_exists("tokyonight") then
         vim.g.tokyonight_style = "night"
@@ -131,6 +243,14 @@ vim.api.nvim_create_user_command('Atheme', function(opts)
       end
       return false
     end,
+    ["tokyo-night"] = function() 
+      return theme_exists("tokyo-night") and vim.cmd("colorscheme tokyo-night") or false
+    end,
+    ["tokyo-night-storm"] = function() 
+      return theme_exists("tokyo-night") and vim.cmd("colorscheme tokyo-night-storm") or false
+    end,
+    
+    -- One Theme Variants
     ["one"] = function() 
       if theme_exists("one") then
         vim.o.background = "dark"
@@ -147,6 +267,8 @@ vim.api.nvim_create_user_command('Atheme', function(opts)
       end
       return false
     end,
+    
+    -- Gruvbox Variants
     ["gruvbox"] = function() 
       if theme_exists("gruvbox") then
         vim.o.background = "dark"
@@ -163,6 +285,8 @@ vim.api.nvim_create_user_command('Atheme', function(opts)
       end
       return false
     end,
+    
+    -- Cyberdream Variants
     ["cyberdream"] = function() 
       if theme_exists("cyberdream") then
         pcall(require, "cyberdream")
@@ -181,6 +305,7 @@ vim.api.nvim_create_user_command('Atheme', function(opts)
       end
       return false
     end,
+    
     -- Rose Pine Variants
     ["rose-pine"] = function() 
       if theme_exists("rose-pine") then
@@ -227,7 +352,8 @@ vim.api.nvim_create_user_command('Atheme', function(opts)
       end
       return false
     end,
-    -- Other popular NvChad themes
+    
+    -- Nightfox Family
     ["nightfox"] = function() 
       return theme_exists("nightfox") and vim.cmd("colorscheme nightfox") or false
     end,
@@ -243,6 +369,14 @@ vim.api.nvim_create_user_command('Atheme', function(opts)
     ["carbonfox"] = function() 
       return theme_exists("carbonfox") and vim.cmd("colorscheme carbonfox") or false
     end,
+    ["dawnfox"] = function() 
+      return theme_exists("dawnfox") and vim.cmd("colorscheme dawnfox") or false
+    end,
+    ["dayfox"] = function() 
+      return theme_exists("dayfox") and vim.cmd("colorscheme dayfox") or false
+    end,
+    
+    -- Other Popular Themes
     ["kanagawa"] = function() 
       return theme_exists("kanagawa") and vim.cmd("colorscheme kanagawa") or false
     end,
@@ -273,11 +407,212 @@ vim.api.nvim_create_user_command('Atheme', function(opts)
     ["nord"] = function() 
       return theme_exists("nord") and vim.cmd("colorscheme nord") or false
     end,
+    ["nord-light"] = function() 
+      if theme_exists("nord") then
+        vim.o.background = "light"
+        vim.cmd("colorscheme nord")
+        return true  
+      end
+      return false
+    end,
     ["monokai"] = function() 
       return theme_exists("monokai") and vim.cmd("colorscheme monokai") or false
     end,
+    ["monokai-pro"] = function() 
+      return theme_exists("monokai-pro") and vim.cmd("colorscheme monokai-pro") or false
+    end,
     ["sonokai"] = function() 
       return theme_exists("sonokai") and vim.cmd("colorscheme sonokai") or false
+    end,
+    
+    -- Solarized Themes
+    ["solarized-dark"] = function() 
+      return theme_exists("solarized") and vim.cmd("colorscheme solarized") or false
+    end,
+    ["solarized-light"] = function() 
+      if theme_exists("solarized") then
+        vim.o.background = "light"
+        vim.cmd("colorscheme solarized") 
+        return true
+      end
+      return false
+    end,
+    
+    -- GitHub Themes
+      ["github-dark"] = function() 
+    if theme_exists("github_dark") then
+      vim.cmd("colorscheme github_dark")
+      return true
+    elseif theme_exists("github-theme") then
+      vim.g.github_dark_sidebar = true
+      vim.cmd("colorscheme github_dark")
+      return true
+    end
+    return false
+  end,
+
+  ["github-light"] = function() 
+    if theme_exists("github_light") then
+      vim.cmd("colorscheme github_light")
+      return true
+    elseif theme_exists("github-theme") then
+      -- Try alternative name format
+      vim.g.github_light_sidebar = true
+      vim.cmd("colorscheme github_light")
+      return true
+    end
+    return false
+  end,
+
+  ["github-dark-dimmed"] = function() 
+    if theme_exists("github_dark_dimmed") then
+      vim.cmd("colorscheme github_dark_dimmed")
+      return true
+    elseif theme_exists("github-theme") then
+      vim.cmd("colorscheme github_dark_dimmed")
+      return true
+    end
+    return false
+  end,
+    
+    -- Ayu Themes
+    ["ayu-dark"] = function() 
+      if theme_exists("ayu") then
+        vim.g.ayucolor = "dark"
+        vim.cmd("colorscheme ayu") 
+        return true
+      end
+      return false
+    end,
+    ["ayu-light"] = function() 
+      if theme_exists("ayu") then
+        vim.g.ayucolor = "light"
+        vim.cmd("colorscheme ayu") 
+        return true
+      end
+      return false
+    end,
+    ["ayu-mirage"] = function() 
+      if theme_exists("ayu") then
+        vim.g.ayucolor = "mirage"
+        vim.cmd("colorscheme ayu") 
+        return true
+      end
+      return false
+    end,
+    
+    -- Material Theme
+    ["material-theme"] = function() 
+      return theme_exists("material") and vim.cmd("colorscheme material") or false
+    end,
+    
+    -- Gruvbox Material Variants
+    ["gruvbox-material"] = function() 
+      if theme_exists("gruvbox-material") then
+        vim.g.gruvbox_material_background = "medium"
+        vim.o.background = "dark"
+        vim.cmd("colorscheme gruvbox-material") 
+        return true
+      end
+      return false
+    end,
+    ["gruvbox-material-hard"] = function() 
+      if theme_exists("gruvbox-material") then
+        vim.g.gruvbox_material_background = "hard"
+        vim.o.background = "dark"
+        vim.cmd("colorscheme gruvbox-material") 
+        return true
+      end
+      return false
+    end,
+    
+    -- *Fly Themes
+    ["palenight"] = function() 
+      return theme_exists("palenight") and vim.cmd("colorscheme palenight") or false
+    end,
+    ["moonfly"] = function() 
+      return theme_exists("moonfly") and vim.cmd("colorscheme moonfly") or false
+    end,
+    ["nightfly"] = function() 
+      return theme_exists("nightfly") and vim.cmd("colorscheme nightfly") or false
+    end,
+    
+    -- Additional Dracula
+    ["dracula-plus"] = function() 
+      return theme_exists("dracula_pro") and vim.cmd("colorscheme dracula_pro") or false
+    end,
+    
+    -- Synthwave
+    ["synthwave84"] = function() 
+      return theme_exists("synthwave84") and vim.cmd("colorscheme synthwave84") or false
+    end,
+    
+    -- Kanagawa Variants
+    ["kanagawa-dragon"] = function() 
+      if theme_exists("kanagawa") then
+        vim.g.kanagawa_variant = "dragon"
+        vim.cmd("colorscheme kanagawa")
+        return true
+      end
+      return false
+    end,
+    ["kanagawa-wave"] = function() 
+      if theme_exists("kanagawa") then
+        vim.g.kanagawa_variant = "wave"
+        vim.cmd("colorscheme kanagawa")
+        return true
+      end
+      return false
+    end,
+    
+    -- Oxocarbon
+    ["oxocarbon"] = function() 
+      return theme_exists("oxocarbon") and vim.cmd("colorscheme oxocarbon") or false
+    end,
+    
+    -- Tomorrow Night Variants
+    ["tomorrow-night"] = function() 
+      return theme_exists("tomorrow-night") and vim.cmd("colorscheme tomorrow-night") or false
+    end,
+    ["tomorrow-night-bright"] = function() 
+      return theme_exists("tomorrow-night-bright") and vim.cmd("colorscheme tomorrow-night-bright") or false
+    end,
+    
+    -- Zenburn
+    ["zenburn"] = function() 
+      return theme_exists("zenburn") and vim.cmd("colorscheme zenburn") or false
+    end,
+    
+    -- Additional Themes from your list
+    ["acme"] = function() 
+      return theme_exists("acme") and vim.cmd("colorscheme acme") or false
+    end,
+    ["afterglow"] = function() 
+      return theme_exists("afterglow") and vim.cmd("colorscheme afterglow") or false
+    end,
+    ["alabaster"] = function() 
+      return theme_exists("alabaster") and vim.cmd("colorscheme alabaster") or false
+    end,
+    ["alabaster-dark"] = function() 
+      return theme_exists("alabaster-dark") and vim.cmd("colorscheme alabaster-dark") or false
+    end,
+    ["argonaut"] = function() 
+      return theme_exists("argonaut") and vim.cmd("colorscheme argonaut") or false
+    end,
+    ["horizon-dark"] = function() 
+      return theme_exists("horizon") and vim.cmd("colorscheme horizon") or false
+    end,
+    ["hyper"] = function() 
+      return theme_exists("hyper") and vim.cmd("colorscheme hyper") or false
+    end,
+    ["moonlight"] = function() 
+      return theme_exists("moonlight") and vim.cmd("colorscheme moonlight") or false
+    end,
+    ["vscode"] = function() 
+      return theme_exists("vscode") and vim.cmd("colorscheme vscode") or false
+    end,
+    ["wombat"] = function() 
+      return theme_exists("wombat") and vim.cmd("colorscheme wombat") or false
     end,
   }
   
@@ -310,17 +645,39 @@ vim.api.nvim_create_user_command('Atheme', function(opts)
 end, {
   nargs = "?",
   complete = function(ArgLead, CmdLine, CursorPos)
+    -- ====================================================
+    -- AUTO-COMPLETION LIST FOR THEMES (KEEP IN SYNC ABOVE)
+    -- ====================================================
     local themes = {
       "catppuccin", "catppuccin-latte", "catppuccin-frappe", "catppuccin-macchiato", "catppuccin-mocha",
       "tokyonight", "tokyonight-day", "tokyonight-storm", "tokyonight-night", "tokyonight-moon",
+      "tokyo-night", "tokyo-night-storm",
       "one", "one-light", "gruvbox", "gruvbox-light", 
       "cyberdream", "cyberdream-light", 
       "rose-pine", "rose-pine-moon", "rose-pine-dawn",
-      "nightfox", "duskfox", "nordfox", "terafox", "carbonfox",
-      "kanagawa", "onedark", "dracula", 
-      "everforest", "everforest-light", "nord", "monokai", "sonokai"
+      "nightfox", "duskfox", "nordfox", "terafox", "carbonfox", "dawnfox", "dayfox",
+      "kanagawa", "kanagawa-dragon", "kanagawa-wave", 
+      "onedark", "dracula", "dracula-plus", 
+      "everforest", "everforest-light", 
+      "nord", "nord-light", "nord-vim",
+      "monokai", "monokai-pro", "sonokai",
+      "solarized-dark", "solarized-light", 
+      "github-dark", "github-light", "github-dark-dimmed",
+      "ayu-dark", "ayu-light", "ayu-mirage",
+      "material-theme", 
+      "gruvbox-material", "gruvbox-material-hard",
+      "palenight", "moonfly", "nightfly",
+      "synthwave84", "oxocarbon", 
+      "tomorrow-night", "tomorrow-night-bright",
+      "zenburn", "spacegray",
+      "acme", "afterglow", "alabaster", "alabaster-dark", "argonaut",
+      "horizon-dark", "hyper", "moonlight", "vscode", "wombat",
+      -- New themes
+      "iceberg", "edge", "edge-light", "melange", "melange-light",
+      "onedarkpro", "nordic", "monochrome", "nofrils", "nofrils-light",
+      "doom-one", "vacme", "spaceduck", "komau", "challenger-deep"
     }
-    
+
     local matches = {}
     for _, theme in ipairs(themes) do
       if theme:lower():find(ArgLead:lower()) == 1 then
@@ -450,7 +807,7 @@ vim.o.guifont = "FiraCode Nerd Font:h14"
 vim.g.neovide_cursor_vfx_mode = ""
 vim.g.neovide_cursor_animation_length = 0
 
--- Enble cursor animation effects
+-- Enable cursor animation effects
 -- vim.g.neovide_cursor_animation_length = 0.02
 -- vim.g.neovide_cursor_trail_length = 0.2
 -- vim.g.neovide_cursor_vfx_mode = "sonicboom"
@@ -493,4 +850,3 @@ end, {})
 --    end
 --  end
 --})
-

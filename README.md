@@ -145,6 +145,74 @@ nvim document.tex
 :ArduinoUpload  " Upload to ESP32
 ```
 
+## 🎨 Theme Management
+
+One of the standout features of this configuration is the custom theme switcher that allows for quick theme changes without restarting Neovim.
+
+### Using the Theme Switcher
+
+- Type `:Atheme` to see a list of all available themes
+- Type `:Atheme <theme-name>` to switch to a specific theme
+- Your theme selection persists between sessions
+
+### Available Theme Categories
+
+This configuration includes over 100 carefully selected themes across various style categories:
+
+1. **Dark and Modern**
+   - Catppuccin (mocha, macchiato, frappe)
+   - Tokyo Night & variants
+   - Cyberdream
+   - Kanagawa & variants
+   - OneDark
+
+2. **Light Themes**
+   - Catppuccin Latte
+   - Rose Pine Dawn
+   - Solarized Light
+   - GitHub Light
+   - Ayu Light
+
+3. **Classic Vim-Style**
+   - Gruvbox & variants
+   - Nord
+   - Zenburn
+   - Moonfly
+   - Nightfly
+
+4. **Minimal & Focus**
+   - Alabaster
+   - Monochrome
+   - Nofrils
+   - Edge
+
+5. **Retro & Specialty**
+   - Synthwave84
+   - Doom One
+   - Dracula & variants
+   - Challenger Deep
+   - Spaceduck
+
+### Adding New Themes
+
+The theme system is easily extensible. To add a new theme:
+
+1. Add the theme plugin to `lua/plugins.lua`:
+   ```lua
+   {
+     "author/new-theme-plugin",
+     lazy = false,
+     priority = 999,
+   },
+
+2. Add the theme function to the themes table in `init.lua`:
+    ```lua
+    ["new-theme-name"] = function() 
+    return theme_exists("new-theme") and vim.cmd("colorscheme new-theme") or false
+    end,
+
+3. Add the theme name to the autocomplete list in the same file.
+
 ## 🔑 Key Mappings
 
 Leader key: `Space`
