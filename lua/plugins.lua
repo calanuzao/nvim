@@ -298,7 +298,13 @@ return {
       vim.g.default_guicursor = vim.opt.guicursor:get()
       
       require("toggleterm").setup{
-        size = 120,
+        size = function(term)
+          if term.direction == "horizontal" then
+            return math.floor(vim.o.lines * 0.45) -- % of screen height
+          elseif term.direction == "vertical" then
+            return math.floor(vim.o.columns * 0.4)
+          end
+        end,
         open_mapping = [[<C-\>]],
         hide_numbers = true,
         shade_filetypes = {},
@@ -307,7 +313,7 @@ return {
         start_in_insert = true,
         insert_mappings = true,
         persist_size = true,
-        direction = "float", -- "horizontal", "vertical", "tab", "float"
+        direction = "horizontal", -- horizontal split at bottom
         close_on_exit = false,
         shell = vim.o.shell,
         float_opts = {
@@ -335,6 +341,10 @@ return {
 
       -- Escape from terminal mode
       keymap('t', '<esc>', '<C-\\><C-n>', opts)
+      
+      -- Additional keymaps for quick toggling
+      keymap('n', '<leader>tt', '<cmd>ToggleTerm direction=horizontal<CR>', opts)
+      keymap('t', '<leader>tt', '<cmd>ToggleTerm<CR>', opts)
 
       -- Alternative approach: Use autocmd for ToggleTerm buffers
       vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
@@ -733,6 +743,14 @@ return {
         vim.cmd("hi DashboardFooter guifg=#5c6370")
       end,
     })
+
+    -- Add a global command to go back to alpha
+    vim.api.nvim_create_user_command("Alpha", function()
+      require("alpha").start()
+    end, {})
+    
+    -- Create Ctrl+D mapping to go to dashboard from anywhere
+    vim.keymap.set("n", "<C-d>", ":Alpha<CR>", { silent = true, noremap = true, desc = "Open Dashboard" })
   end,
 },
   {

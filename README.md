@@ -47,6 +47,7 @@ configuration.
 
 ## 🔧 Prerequisites
 
+- This configuration works best with my Alacritty configuration (still working on the repo!!!)
 - Neovim >= 0.9.0
 - Git
 - Node.js >= 14
