@@ -583,7 +583,6 @@ vim.api.nvim_create_user_command('Atheme', function(opts)
       return theme_exists("zenburn") and vim.cmd("colorscheme zenburn") or false
     end,
     
-    -- Additional Themes from your list
     ["acme"] = function() 
       return theme_exists("acme") and vim.cmd("colorscheme acme") or false
     end,
@@ -642,9 +641,11 @@ vim.api.nvim_create_user_command('Atheme', function(opts)
   else
     print("Theme '" .. theme .. "' not found. Type :Atheme with no arguments to see all themes.")
   end
+    return nil
 end, {
   nargs = "?",
   complete = function(ArgLead, CmdLine, CursorPos)
+    
     -- ====================================================
     -- AUTO-COMPLETION LIST FOR THEMES (KEEP IN SYNC ABOVE)
     -- ====================================================
@@ -672,7 +673,6 @@ end, {
       "zenburn", "spacegray",
       "acme", "afterglow", "alabaster", "alabaster-dark", "argonaut",
       "horizon-dark", "hyper", "moonlight", "vscode", "wombat",
-      -- New themes
       "iceberg", "edge", "edge-light", "melange", "melange-light",
       "onedarkpro", "nordic", "monochrome", "nofrils", "nofrils-light",
       "doom-one", "vacme", "spaceduck", "komau", "challenger-deep"
@@ -801,7 +801,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 ---------------------------------------------------------------
 
 -- Font
-vim.o.guifont = "FiraCode Nerd Font:h14"
+vim.o.guifont = "FiraCode Nerd Font:h20"
 
 -- Disable cursor animation/effects
 vim.g.neovide_cursor_vfx_mode = ""
@@ -841,12 +841,3 @@ vim.api.nvim_create_user_command('Specs', function()
   vim.g.neovide_profiler = not vim.g.neovide_profiler
   print("Neovide profiler " .. (vim.g.neovide_profiler and "enabled" or "disabled"))
 end, {})
-
--- Dashboard Configuration
---vim.api.nvim_create_autocmd('BufDelete', {
---   callback = function()
---    if #vim.fn.getbufinfo({ buflisted = 1 }) == 0 then
---      vim.cmd('Dashboard')
---    end
---  end
---})

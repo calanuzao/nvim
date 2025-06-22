@@ -1,6 +1,115 @@
 -- leader key is space bar (some keymappings need to be changed for better configuration)
 
 return {
+  -- nonsense
+  {
+    'eandrju/cellular-automaton.nvim',
+  },
+  -- Finder: command+f
+  {
+    "kevinhwang91/nvim-hlslens",
+    config = function()
+      require('hlslens').setup({
+        calm_down = true,
+        nearest_only = true,
+        nearest_float_when = 'always'
+      })
+      
+      vim.keymap.set({'n', 'x'}, 'n', 
+        [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]])
+      vim.keymap.set({'n', 'x'}, 'N', 
+        [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]])
+      vim.keymap.set({'n', 'x'}, '*', [[*<Cmd>lua require('hlslens').start()<CR>]])
+      vim.keymap.set({'n', 'x'}, '#', [[#<Cmd>lua require('hlslens').start()<CR>]])
+      vim.keymap.set({'n', 'x'}, 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]])
+      vim.keymap.set({'n', 'x'}, 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]])
+      
+      -- Use Ctrl-F for Command-F like experience
+      vim.keymap.set('n', '<C-f>', ':set hlsearch<CR>/', { noremap = true })
+      vim.keymap.set('i', '<C-f>', '<Esc>:set hlsearch<CR>/', { noremap = true })
+    end,
+  },
+  -- vscode lsp glance
+  {
+    'dnlhc/glance.nvim',
+    cmd = 'Glance'
+  },
+  -- ide experience
+  {
+    "ldelossa/nvim-ide",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons", 
+      "MunifTanjim/nui.nvim",
+    },
+    event = "VeryLazy", -- prevents loading at startup, delays until needed
+    config = function()
+      -- Load all required components
+      -- default components
+      local bufferlist      = require('ide.components.bufferlist')
+      local explorer        = require('ide.components.explorer')
+      local outline         = require('ide.components.outline')
+      local callhierarchy   = require('ide.components.callhierarchy')
+      local timeline        = require('ide.components.timeline')
+      local terminal        = require('ide.components.terminal')
+      local terminalbrowser = require('ide.components.terminal.terminalbrowser')
+      local changes         = require('ide.components.changes')
+      local commits         = require('ide.components.commits')
+      local branches        = require('ide.components.branches')
+      local bookmarks       = require('ide.components.bookmarks')
+
+      require('ide').setup({
+          -- The global icon set to use.
+          -- values: "nerd", "codicon", "default"
+          icon_set = "default",
+          -- Set the log level for nvim-ide's log. Log can be accessed with 
+          -- 'Workspace OpenLog'. Values are 'debug', 'warn', 'info', 'error'
+          log_level = "info",
+          -- Component specific configurations and default config overrides.
+          components = {
+              -- The global keymap is applied to all Components before construction.
+              -- It allows common keymaps such as "hide" to be overridden, without having
+              -- to make an override entry for all Components.
+              --
+              -- If a more specific keymap override is defined for a specific Component
+              -- this takes precedence.
+              global_keymaps = {
+                  -- example, change all Component's hide keymap to "h"
+                  -- hide = h
+              },
+              -- example, prefer "x" for hide only for Explorer component.
+              -- Explorer = {
+              --     keymaps = {
+              --         hide = "x",
+              --     }
+              -- }
+          },
+          -- default panel groups to display on left and right.
+          panels = {
+              left = "explorer",
+              right = "git"
+          },
+          -- panels defined by groups of components, user is free to redefine the defaults
+          -- and/or add additional.
+          panel_groups = {
+              explorer = { outline.Name, bufferlist.Name, explorer.Name, bookmarks.Name, callhierarchy.Name, terminalbrowser.Name },
+              terminal = { terminal.Name },
+              git = { changes.Name, commits.Name, timeline.Name, branches.Name }
+          },
+          -- workspaces config
+          workspaces = {
+              -- which panels to open by default, one of: 'left', 'right', 'both', 'none'
+              auto_open = 'none',
+          },
+          -- default panel sizes for the different positions
+          panel_sizes = {
+              left = 30,
+              right = 30,
+              bottom = 15
+          }
+      })
+    end,
+  },
   -- indentation
   {
     'vidocqh/auto-indent.nvim',
@@ -11,7 +120,6 @@ return {
     "EggbertFluffle/beepboop.nvim",
     max_sounds = 20,
     sound_map = {
-
     }
   },
   -- 8bit sound effects
@@ -19,8 +127,8 @@ return {
   "jackplus-xyz/player-one.nvim",
   ---@type PlayerOne.Config
   opts = {
-      master_volume = 0.06,
-      theme = "chiptune",
+      master_volume = 0.075,
+      theme = "chiptune", -- "chiptune", "crystal", "synth"
     },
 },
   -- homepage tips 
@@ -1025,7 +1133,9 @@ return {
   },
 
 
-  -- THEMES
+---------------------------------------------------------------
+-- THEMES CONFIGURATION
+---------------------------------------------------------------
   -- GitHub themes
   {
   "cocopon/iceberg.vim",
@@ -1360,7 +1470,47 @@ return {
       })
     end,
   },
-  -- debugging code
+---------------------------------------------------------------
+-- DEBUGGING PLUGINS
+---------------------------------------------------------------
+  -- diagnostics
+  {
+  "folke/trouble.nvim",
+  opts = {}, -- for default options, refer to the configuration section for custom setup.
+  cmd = "Trouble",
+  keys = {
+    {
+      "<leader>xx",
+      "<cmd>Trouble diagnostics toggle<cr>",
+      desc = "Diagnostics (Trouble)",
+    },
+    {
+      "<leader>xX",
+      "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+      desc = "Buffer Diagnostics (Trouble)",
+    },
+    {
+      "<leader>cs",
+      "<cmd>Trouble symbols toggle focus=false<cr>",
+      desc = "Symbols (Trouble)",
+    },
+    {
+      "<leader>cl",
+      "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+      desc = "LSP Definitions / references / ... (Trouble)",
+    },
+    {
+      "<leader>xL",
+      "<cmd>Trouble loclist toggle<cr>",
+      desc = "Location List (Trouble)",
+    },
+    {
+      "<leader>xQ",
+      "<cmd>Trouble qflist toggle<cr>",
+      desc = "Quickfix List (Trouble)",
+    },
+  },
+},
   {
     "mfussenegger/nvim-dap",
     dependencies = {

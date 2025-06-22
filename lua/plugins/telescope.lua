@@ -9,6 +9,7 @@ return {
   config = function()
     local builtin = require("telescope.builtin")
     vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find Files" })
+    vim.keymap.set("n", "<C-t>", builtin.find_files, { desc = "Telescope Open Files" })
     vim.keymap.set(
       "n",
       "<leader>fg",
@@ -31,7 +32,7 @@ return {
     vim.keymap.set("n", "<leader>gb", builtin.git_bcommits, { desc = "Search Git Commits for Buffer" })
     vim.keymap.set("n", "<leader>fk", builtin.keymaps, { desc = "Find Keymaps" })		
     vim.keymap.set("n", "<leader>/", function()
-      -- You can pass additional configuration to telescope to change theme, layout, etc.
+      -- pass additional configuration to telescope to change theme, layout, etc.
       require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
         winblend = 10,
         previewer = false,
@@ -42,12 +43,12 @@ return {
     local telescope = require("telescope")
     local telescopeConfig = require("telescope.config")
 
-    -- Clone the default Telescope configuration
+    -- clone the default Telescope configuration
     local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
 
-    -- I want to search in hidden/dot files.
+    -- search in hidden/dot files.
     table.insert(vimgrep_arguments, "--hidden")
-    -- I don't want to search in the `.git` directory.
+    -- don't want to search in the `.git` directory.
     table.insert(vimgrep_arguments, "--glob")
     table.insert(vimgrep_arguments, "!**/.git/*")
 
@@ -83,8 +84,8 @@ return {
             ["<CR>"] = select_one_or_multi,
             ["<C-w>"] = actions.send_selected_to_qflist + actions.open_qflist,
             ["<C-S-d>"] = actions.delete_buffer,
-				    ["<C-s>"] = actions.cycle_previewers_next,
-				    ["<C-a>"] = actions.cycle_previewers_prev,
+                    ["<C-s>"] = actions.cycle_previewers_next,
+                    ["<C-a>"] = actions.cycle_previewers_prev,
           },
         },
       },
