@@ -1,11 +1,45 @@
 -- leader key is space bar (some keymappings need to be changed for better configuration)
+-- NOTE TO READER: configuration is messy but it works. I am currently working on cleaning it.
+-- For future reference, refer to the plugin configuration that will be located under the
+-- plugins/ directory.
 
 return {
   -- nonsense
   {
     'eandrju/cellular-automaton.nvim',
   },
-  -- Finder: command+f
+  -- several windows
+  {
+  'nyngwang/suave.lua',
+  config = function()
+    require('suave').setup({
+      auto_save = {
+        enabled = true,
+      },
+      store_hooks = {
+        before_mksession = {
+        },
+        after_mksession = {
+          function(data)
+            data.colorscheme = vim.g.colors_name
+          end,
+        },
+      },
+      restore_hooks = {
+        after_source = {
+          function(data)
+            if not data then return end
+            vim.cmd(string.format([[
+              color %s
+              doau ColorScheme %s
+            ]], data.colorscheme, data.colorscheme))
+          end,
+        },
+      }
+    })
+  end
+},
+  -- Finder: ctrl+f
   {
     "kevinhwang91/nvim-hlslens",
     config = function()
@@ -127,6 +161,7 @@ return {
   "jackplus-xyz/player-one.nvim",
   ---@type PlayerOne.Config
   opts = {
+      is_enabled = false,
       master_volume = 0.075,
       theme = "chiptune", -- "chiptune", "crystal", "synth"
     },
