@@ -1074,6 +1074,7 @@ return {
           "vim",
           "vimdoc",
           "query",
+          "regex",
           "elixir",
           "erlang",
           "heex",
@@ -1890,6 +1891,18 @@ return {
           "yamlfix",
           "taplo",
           "shellcheck",
+          -- C++ development tools
+          "clangd",
+          "clang-format",
+          "codelldb",
+          -- Python development tools
+          "pyright",
+          "ruff-lsp",
+          "black",
+          "isort",
+          "pylint",
+          "mypy",
+          "debugpy",
         },
       })
     end,

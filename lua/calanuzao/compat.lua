@@ -4,45 +4,23 @@ local M = {}
 
 -- Apply all compatibility fixes
 function M.setup()
-  -- Fix vim.highlight.on_yank deprecation with a backward-compatible alternative
-  local highlight_on_yank = vim.highlight.on_yank
-  vim.highlight.on_yank = function(opts)
-    local timeout = opts and opts.timeout or 150
-    local hl_group = opts and opts.higroup or "IncSearch"
-    
-    local id = vim.api.nvim_create_namespace("YankHighlightNamespace")
-    vim.api.nvim_set_hl(0, "YankHighlight", { link = hl_group })
-    
-    local line_start, col_start = unpack(vim.api.nvim_buf_get_mark(0, "["))
-    local line_end, col_end = unpack(vim.api.nvim_buf_get_mark(0, "]"))
-    
-    if line_start == 0 then return end
-    
-    -- Calculate the length for the first and last line
-    local first_line = vim.api.nvim_buf_get_lines(0, line_start - 1, line_start, false)[1] or ""
-    local first_line_length = first_line:len()
-    local last_line_length = col_end
-    
-    -- Apply highlighting
-    if line_start == line_end then
-      vim.api.nvim_buf_add_highlight(0, id, "YankHighlight", line_start - 1, col_start, col_end)
-    else
-      -- Highlight first line
-      vim.api.nvim_buf_add_highlight(0, id, "YankHighlight", line_start - 1, col_start, first_line_length)
-      
-      -- Highlight middle lines (if any)
-      for line = line_start, line_end - 2 do
-        vim.api.nvim_buf_add_highlight(0, id, "YankHighlight", line, 0, -1)
+  -- Fix vim.highlight.on_yank deprecation with the new vim.hl API
+  if vim.highlight and vim.highlight.on_yank then
+    -- Use the existing function if available and working
+    local highlight_on_yank = vim.highlight.on_yank
+    vim.highlight.on_yank = function(opts)
+      -- Check if the new vim.hl API is available
+      if vim.hl and vim.hl.on_yank then
+        return vim.hl.on_yank(opts)
+      else
+        -- Fallback to the original function
+        return highlight_on_yank(opts)
       end
-      
-      -- Highlight last line
-      vim.api.nvim_buf_add_highlight(0, id, "YankHighlight", line_end - 1, 0, last_line_length)
     end
-    
-    -- Clear highlights after timeout
-    vim.defer_fn(function()
-      vim.api.nvim_buf_clear_namespace(0, id, 0, -1)
-    end, timeout)
+  elseif vim.hl and vim.hl.on_yank then
+    -- Use the new API directly
+    vim.highlight = vim.highlight or {}
+    vim.highlight.on_yank = vim.hl.on_yank
   end
   
   -- Fix vim.tbl_islist deprecation
