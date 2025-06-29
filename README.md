@@ -18,7 +18,7 @@ developing audio applications. Think of me as the Vim Beethoven, but with a keyb
 
 I started using ChadVim, but I had no idea how vim actully worked, and I was just copying and pasting configurations without understanding them. My job required me to work with audio develpment, and 
 embedded systems, and going back and forth between my NeoVim configuration and the documentation was a pain. I just used the good old VSCode, turns out using an IDE was not ideal for me give the fact
-that I had a potato of a laptop (not anymore - thank you capitalism), and I needed something lightweight, fast, and easy to use. This configuration has everything I use ona daily basis, from a neat 
+that I had a potato of a laptop (not anymore - thank you capitalism), and I needed something lightweight, fast, and easy to use. This configuration has everything I use on a daily basis, from a neat 
 dashboard, to LSP support, to Arduino development, and LaTeX integration. It is designed to be extensible, so you can easily add or remove features as needed.
 
 One of my favorite features is my DIY theme switcher, which allows me to change the theme on the fly. People often laugh at me for being excited for the theme switcher, but trust me, it comes in handy
@@ -26,108 +26,74 @@ when it's 3:25am on a Tuesday, and you live in a studio apartment with your girl
 trillions of themes out there.
 
 So yes - enjoy this powerful, feature-rich NeoVim configuration optimized for audio development, Python, Arduino, and LaTeX, with a focus on productivity and extensibility blah, blah, blah. 
-Take into consideration that this will not make you a better engineer, we all still suck at electromagnetism:, and we all still have impostor syndrome, but at least you will have a nice looking NeoVim
+Take into consideration that this will not make you a better engineer, we all still suck at electromagnetism, and we all still have impostor syndrome, but at least you will have a nice looking NeoVim
 configuration. 
 
 ![Neovim Dashboard](./assets/homepage.png)
 
-## ✨ Features Overview
-
-### 🎨 **Themes & Appearance**
-- **120+ Themes** - Massive collection of popular colorschemes
-- **Theme Persistence** - Remembers your choice across sessions
-- **Theme Families**: Catppuccin, Tokyo Night, Rose Pine, Gruvbox, Nord, Material, and many more
-- **Neovide Integration** - Optimized GUI settings with transparency and blur effects
-- **Visual Enhancements** - Syntax highlighting, line numbers, and modern UI elements
-
-### ⚡ **Performance & Efficiency**
-- **Lazy Loading** - Plugins load only when needed for fast startup
-- **Optimized Settings** - Carefully tuned for performance
-- **Background Processes** - Non-blocking operations for smooth experience
-- **Memory Management** - Efficient resource usage
-
-### 🔧 **Development Tools**
-- **LSP Integration** - Language servers for multiple languages
-- **Debugging Support** - Full debugging capabilities with DAP
-- **Testing Framework** - Integrated testing with Jest, Pytest, and more
-- **Arduino Development** - Complete Arduino IDE replacement
-- **Git Integration** - Advanced Git operations and visual diffs
-
-### 📝 **Note-Taking & Documentation**
-- **Obsidian Integration** - Seamless note-taking workflow
-- **Markdown Support** - Enhanced markdown editing with live preview
-- **LaTeX Support** - VimTeX integration for academic writing
-- **Snippet Management** - UltiSnips for code templates
-
-### 🎯 **Navigation & Editing**
-- **Fuzzy Finding** - Telescope for files, buffers, and text search
-- **Quick Navigation** - Harpoon for rapid file switching
-- **File Explorer** - NvimTree with custom keybindings
-- **Buffer Management** - Efficient buffer switching and management
-
-## 🗂️ Configuration Structure
+## Configuration Structure
 
 ```
 ~/.config/nvim/
-├── 📄 init.lua                  # Main entry point (concise loader)
-├── 📄 README.md                 # This comprehensive documentation
-├── 📄 lazy-lock.json            # Plugin version lock file
+├── init.lua                  # Main entry point (concise loader)
+├── README.md                 # This comprehensive documentation
+├── lazy-lock.json            # Plugin version lock file
 ├── 
-├── 📁 lua/
-│   ├── 📄 plugins.lua           # Plugin definitions
+├── lua/
+│   ├── plugins.lua           # Plugin definitions
 │   │
-│   ├── 📁 config/               # 🆕 ORGANIZED CONFIGURATION
-│   │   ├── 📄 init.lua          # Configuration coordinator
-│   │   ├── 📄 core.lua          # Core Neovim settings
-│   │   ├── 📄 keymaps.lua       # All keybindings (organized by category)
-│   │   ├── 📄 themes.lua        # 120+ themes with persistence
-│   │   ├── 📄 ui.lua            # UI configuration (Neovide, explorer)
-│   │   ├── 📄 commands.lua      # Custom commands (:DSP, :Maps, etc.)
-│   │   └── 📄 lazy.lua          # Plugin manager setup
+│   ├── config/               # ORGANIZED CONFIGURATION
+│   │   ├── init.lua          # Configuration coordinator
+│   │   ├── core.lua          # Core Neovim settings
+│   │   ├── keymaps.lua       # All keybindings (organized by category)
+│   │   ├── themes.lua        # 120+ themes with persistence
+│   │   ├── ui.lua            # UI configuration (Neovide, explorer)
+│   │   ├── commands.lua      # Custom commands (:DSP, :Maps, etc.)
+│   │   └── lazy.lua          # Plugin manager setup
 │   │
-│   ├── 📁 calanuzao/            # Legacy modules (preserved)
-│   │   ├── 📄 compat.lua        # Compatibility layer
-│   │   ├── 📄 dsp.lua           # DSP formulas reference
-│   │   ├── 📄 globals.lua       # Global utilities
-│   │   ├── 📄 options.lua       # Vim options
-│   │   └── 📄 remaps.lua        # Key remappings
+│   ├── calanuzao/            # Legacy modules (preserved)
+│   │   ├── compat.lua        # Compatibility layer
+│   │   ├── dsp.lua           # DSP formulas reference
+│   │   ├── globals.lua       # Global utilities
+│   │   ├── options.lua       # Vim options
+│   │   └── remaps.lua        # Key remappings
 │   │
-│   └── 📁 plugins/              # Individual plugin configurations
-│       ├── 📄 lsp.lua           # Language server setup
-│       ├── 📄 telescope.lua     # Fuzzy finder
-│       ├── 📄 harpoon.lua       # Quick navigation
-│       ├── 📄 obsidian.lua      # Note-taking
-│       ├── 📄 tmux.lua          # Terminal multiplexer
-│       ├── 📄 neoclip.lua       # Clipboard manager
-│       ├── 📄 nvim-ufo.lua      # Code folding
-│       ├── 📄 VimTeX.lua        # LaTeX support
-│       └── 📄 [others...]       # Additional plugins
+│   └── plugins/              # Individual plugin configurations
+│       ├── lsp.lua           # Language server setup
+│       ├── telescope.lua     # Fuzzy finder
+│       ├── harpoon.lua       # Quick navigation
+│       ├── obsidian.lua      # Note-taking
+│       ├── tmux.lua          # Terminal multiplexer
+│       ├── neoclip.lua       # Clipboard manager
+│       ├── nvim-ufo.lua      # Code folding
+│       ├── VimTeX.lua        # LaTeX support
+│       └── [others...]       # Additional plugins
 │
-├── 📁 ftplugin/                 # Filetype-specific settings
-│   ├── 📄 java.lua             # Java-specific configuration
-│   ├── 📄 cpp.lua              # 🆕 C++ development setup
-│   ├── 📄 c.lua                # 🆕 C development setup
-│   ├── 📄 h.lua                # 🆕 C/C++ headers
-│   ├── 📄 python.lua           # 🆕 Python development setup
-│   ├── 📄 matlab.lua           # 🆕 MATLAB development setup
-│   └── 📄 m.lua                # 🆕 MATLAB .m files
+├── ftplugin/                 # Filetype-specific settings
+│   ├── java.lua             # Java-specific configuration
+│   ├── cpp.lua              # C++ development setup
+│   ├── c.lua                # C development setup
+│   ├── h.lua                # C/C++ headers
+│   ├── python.lua           # Python development setup
+│   ├── matlab.lua           # MATLAB development setup
+│   └── m.lua                # MATLAB .m files
 │
-├── 📁 UltiSnips/               # Code snippets
-│   └── 📄 tex.snippets         # LaTeX snippets
+├── UltiSnips/               # Code snippets
+│   └── tex.snippets         # LaTeX snippets
 │
-├── 📁 demos/                   # 🆕 Development environment demos
-│   ├── 📄 README.md            # Comprehensive demo documentation
-│   ├── 📄 run_demo.sh          # Interactive demo selector
-│   ├── 📄 python_demo_setup.sh # Python development demo
-│   ├── 📄 cpp_demo_setup.sh    # C++ development demo
-│   └── 📄 matlab_demo_setup.sh # MATLAB development demo
+├── demos/                   # Development environment demos
+│   ├── README.md            # Comprehensive demo documentation
+│   ├── run_demo.sh          # Interactive demo selector
+│   ├── python_demo_setup.sh # Python development demo
+│   ├── cpp_demo_setup.sh    # C++ development demo
+│   └── matlab_demo_setup.sh # MATLAB development demo
 │
-└── 📁 bookmarks/               # Saved locations and references
+└── bookmarks/               # Saved locations and references
 ```
 
-## 🎯 Essential Commands
+## Essential Commands
 
-### 🔧 **Configuration Commands**
+### **Configuration Commands**
 ```vim
 :Maps                 " Show comprehensive keybindings cheat sheet
 :DSP                  " Display DSP formulas and reference
@@ -136,7 +102,7 @@ configuration.
 :Atheme               " List all available themes
 ```
 
-### 🎨 **Theme Management**
+### **Theme Management**
 ```vim
 :Atheme rose-pine     " Switch to Rose Pine theme
 :Atheme catppuccin    " Switch to Catppuccin theme
@@ -144,7 +110,7 @@ configuration.
 :Atheme              " Show all 120+ available themes
 ```
 
-### 🔍 **Search & Navigation**
+### **Search & Navigation**
 ```vim
 <leader>ff           " Find files (Telescope)
 <leader>fg           " Live grep search
@@ -153,7 +119,7 @@ configuration.
 <leader>fr           " Find recent files
 ```
 
-### 📝 **File Operations**
+### **File Operations**
 ```vim
 <C-n>                " Toggle file explorer
 <C-j>                " Next tab
@@ -161,7 +127,7 @@ configuration.
 <leader>e            " Focus file explorer
 ```
 
-### 🧪 **Testing & Development**
+### **Testing & Development**
 ```vim
 <leader>t            " Run tests
 <leader>tf           " Run test file
@@ -169,7 +135,7 @@ configuration.
 <leader>tl           " Run last test
 ```
 
-### 🔧 **Arduino Development**
+### **Arduino Development**
 ```vim
 <leader>av           " Verify Arduino code
 <leader>au           " Upload Arduino code
@@ -177,7 +143,7 @@ configuration.
 :ArduinoUpload       " Upload to connected board
 ```
 
-### 💻 **C++ Development**
+### **C++ Development**
 ```vim
 " LSP Features (automatically available in .cpp, .c, .h files)
 gd                   " Go to definition
@@ -204,7 +170,7 @@ K                    " Show hover documentation
 :ClassTemplate       " Insert class template
 ```
 
-### 🐍 **Python Development**
+### **Python Development**
 ```vim
 " LSP Features (Pyright + Ruff, automatically available in .py files)
 gd                   " Go to definition
