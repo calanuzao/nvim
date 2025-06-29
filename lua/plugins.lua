@@ -4,6 +4,10 @@
 -- plugins/ directory.
 
 return {
+  -- JUCE/DSP Audio Development Support
+  -- Import JUCE/DSP development plugins
+  unpack(require("plugins.juce-dsp")),
+  
   -- nonsense
   {
     'eandrju/cellular-automaton.nvim',

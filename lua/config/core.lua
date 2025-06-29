@@ -71,3 +71,48 @@ end
 
 -- Concealment level (for markdown, etc.)
 vim.opt.conceallevel = 2
+
+--[[
+================================================================================
+LSP ERROR HANDLING
+================================================================================
+--]]
+
+-- Handle LSP folding range errors for problematic buffers
+vim.api.nvim_create_autocmd("LspAttach", {
+  desc = "Handle LSP folding range errors",
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if not client then return end
+    
+    -- Disable folding range for buffers that might cause URI errors
+    local bufname = vim.api.nvim_buf_get_name(args.buf)
+    local buftype = vim.api.nvim_buf_get_option(args.buf, 'buftype')
+    
+    -- Skip folding for special buffer types or unnamed buffers
+    if buftype ~= "" or bufname == "" or bufname:match("^%w+://") then
+      if client.server_capabilities.foldingRangeProvider then
+        client.server_capabilities.foldingRangeProvider = false
+      end
+    end
+  end,
+})
+
+-- Suppress specific LSP error messages
+local original_notify = vim.notify
+vim.notify = function(msg, level, opts)
+  -- Filter out the specific folding range URI error
+  if type(msg) == "string" and msg:match("unresolvable URI") then
+    return
+  end
+  
+  -- Filter out other common LSP noise
+  if type(msg) == "string" and (
+    msg:match("textDocument/foldingRange request") or
+    msg:match("UnhandledPromiseRejection")
+  ) then
+    return
+  end
+  
+  original_notify(msg, level, opts)
+end

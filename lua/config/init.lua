@@ -50,6 +50,24 @@ function M.setup()
   require('calanuzao.remaps')
   require('calanuzao.options')
   require('calanuzao.dsp')
+  
+  -- Initialize JUCE/DSP environment
+  local ok, juce_dsp = pcall(require, 'calanuzao.juce-dsp')
+  if ok then
+    -- Setup JUCE environment for supported file types
+    vim.api.nvim_create_augroup("JuceDSPInit", { clear = true })
+    vim.api.nvim_create_autocmd("FileType", {
+      group = "JuceDSPInit",
+      pattern = { "cpp", "c" },
+      callback = function()
+        -- Only setup for audio-related files
+        local filename = vim.fn.expand("%:t"):lower()
+        if filename:match("audio") or filename:match("dsp") or filename:match("juce") or filename:match("processor") then
+          juce_dsp.setup_juce_environment()
+        end
+      end,
+    })
+  end
 end
 
 return M

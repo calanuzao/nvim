@@ -143,4 +143,206 @@ function M.dsp_formulas()
   map_key('<Esc>', '<cmd>close<CR>')
 end
 
+-- JUCE/DSP Integration
+function M.show_juce_menu()
+  local juce_dsp = require('calanuzao.juce-dsp')
+  
+  local options = {
+    "Create New JUCE Project",
+    "Show DSP Examples", 
+    "Build Current Project",
+    "Learning Resources",
+    "DSP Formulas (existing)",
+    "Setup JUCE Environment"
+  }
+  
+  vim.ui.select(options, {
+    prompt = "JUCE/DSP Development:",
+  }, function(choice)
+    if not choice then return end
+    
+    if choice == "Create New JUCE Project" then
+      juce_dsp.create_juce_project()
+    elseif choice == "Show DSP Examples" then
+      juce_dsp.show_dsp_examples()
+    elseif choice == "Build Current Project" then
+      juce_dsp.build_juce_project()
+    elseif choice == "Learning Resources" then
+      juce_dsp.show_learning_resources()
+    elseif choice == "DSP Formulas (existing)" then
+      M.dsp_formulas()
+    elseif choice == "Setup JUCE Environment" then
+      juce_dsp.setup_juce_environment()
+    end
+  end)
+end
+
+-- Audio DSP code snippets for quick insertion
+function M.insert_dsp_snippet()
+  local snippets = {
+    ["JUCE Audio Processor Template"] = [[
+class MyAudioProcessor : public juce::AudioProcessor
+{
+public:
+    MyAudioProcessor() = default;
+    
+    void prepareToPlay(double sampleRate, int samplesPerBlock) override
+    {
+        spec.maximumBlockSize = samplesPerBlock;
+        spec.sampleRate = sampleRate;
+        spec.numChannels = getTotalNumOutputChannels();
+        
+        -- Initialize DSP objects here
+    }
+    
+    void processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) override
+    {
+        juce::ScopedNoDenormals noDenormals;
+        
+        -- Your processing code here
+    }
+    
+private:
+    juce::dsp::ProcessSpec spec;
+};]],
+
+    ["Low-pass Filter"] = [[
+juce::dsp::IIR::Filter<float> lowPassFilter;
+
+// In prepareToPlay:
+lowPassFilter.prepare(spec);
+*lowPassFilter.coefficients = *juce::dsp::IIR::Coefficients<float>::makeLowPass(sampleRate, cutoffFreq);
+
+// In processBlock:
+lowPassFilter.process(juce::dsp::ProcessContextReplacing<float>(buffer));]],
+
+    ["Oscillator"] = [[
+juce::dsp::Oscillator<float> oscillator;
+
+// In prepareToPlay:
+oscillator.prepare(spec);
+oscillator.initialise([](float x) { return std::sin(x); }); // Sine wave
+oscillator.setFrequency(440.0f);
+
+// In processBlock:
+oscillator.process(juce::dsp::ProcessContextReplacing<float>(buffer));]],
+
+    ["Gain Control"] = [[
+juce::dsp::Gain<float> gain;
+
+// In prepareToPlay:
+gain.prepare(spec);
+gain.setGainDecibels(0.0f);
+
+// In processBlock:
+gain.process(juce::dsp::ProcessContextReplacing<float>(buffer));]],
+
+    ["Reverb Effect"] = [[
+juce::dsp::Reverb reverb;
+
+// In prepareToPlay:
+reverb.prepare(spec);
+juce::dsp::Reverb::Parameters params;
+params.roomSize = 0.5f;
+params.damping = 0.5f;
+params.wetLevel = 0.3f;
+params.dryLevel = 0.7f;
+reverb.setParameters(params);
+
+// In processBlock:
+reverb.process(juce::dsp::ProcessContextReplacing<float>(buffer));]]
+  }
+  
+  vim.ui.select(vim.tbl_keys(snippets), {
+    prompt = "Select DSP snippet to insert:",
+  }, function(choice)
+    if not choice then return end
+    
+    local snippet = snippets[choice]
+    local lines = vim.split(snippet, "\n")
+    local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
+    
+    vim.api.nvim_buf_set_lines(0, row, row, false, lines)
+    print("Inserted: " .. choice)
+  end)
+end
+
+-- Quick reference for JUCE classes and functions
+function M.show_juce_reference()
+  local reference = {
+    ["Core Classes"] = {
+      "AudioProcessor - Base class for audio processing",
+      "AudioBuffer<float> - Container for audio samples", 
+      "dsp::ProcessSpec - Setup specifications for DSP",
+      "dsp::ProcessContext - Processing context wrapper",
+      "dsp::AudioBlock - Non-owning audio data wrapper"
+    },
+    ["DSP Filters"] = {
+      "dsp::IIR::Filter<float> - IIR filter implementation",
+      "dsp::FIR::Filter<float> - FIR filter implementation", 
+      "dsp::Coefficients - Filter coefficient management",
+      "makeLowPass() - Low-pass filter coefficients",
+      "makeHighPass() - High-pass filter coefficients",
+      "makeBandPass() - Band-pass filter coefficients"
+    },
+    ["DSP Generators"] = {
+      "dsp::Oscillator<float> - Wavetable oscillator",
+      "dsp::WaveShaper<float> - Waveshaping processor",
+      "dsp::NoiseGate<float> - Noise gate implementation"
+    },
+    ["DSP Effects"] = {
+      "dsp::Reverb - Reverb effect processor",
+      "dsp::Chorus<float> - Chorus effect",
+      "dsp::Phaser<float> - Phaser effect", 
+      "dsp::Compressor<float> - Dynamic range compressor",
+      "dsp::Limiter<float> - Peak limiter",
+      "dsp::Gain<float> - Gain control"
+    },
+    ["Utility Classes"] = {
+      "dsp::DelayLine<float> - Delay line implementation",
+      "dsp::DryWetMixer<float> - Dry/wet signal mixing",
+      "dsp::Oversampling<float> - Oversampling processor",
+      "dsp::FFT - Fast Fourier Transform"
+    }
+  }
+  
+  local buf = vim.api.nvim_create_buf(false, true)
+  local width = math.floor(vim.o.columns * 0.8)
+  local height = math.floor(vim.o.lines * 0.8)
+  
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = "editor",
+    width = width,
+    height = height,
+    row = math.floor((vim.o.lines - height) / 2),
+    col = math.floor((vim.o.columns - width) / 2),
+    style = "minimal",
+    border = "rounded",
+    title = " JUCE DSP Reference ",
+    title_pos = "center",
+  })
+  
+  local lines = {"", "JUCE DSP Quick Reference", "=" .. string.rep("=", 25), ""}
+  
+  for category, items in pairs(reference) do
+    table.insert(lines, "# " .. category)
+    table.insert(lines, "")
+    for _, item in ipairs(items) do
+      table.insert(lines, "  • " .. item)
+    end
+    table.insert(lines, "")
+  end
+  
+  table.insert(lines, "Press q or <Esc> to close")
+  
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  vim.api.nvim_buf_set_option(buf, "modifiable", false)
+  vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
+  
+  -- Key mappings
+  local opts = { noremap = true, silent = true, buffer = buf }
+  vim.keymap.set('n', 'q', '<cmd>close<CR>', opts)
+  vim.keymap.set('n', '<Esc>', '<cmd>close<CR>', opts)
+end
+
 return M

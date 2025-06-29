@@ -26,6 +26,35 @@ function M.setup_dsp_command()
   vim.api.nvim_create_user_command('DSP', function()
     require("calanuzao.dsp").dsp_formulas()
   end, { desc = "Show DSP Formulas Cheat Sheet" })
+  
+  -- Add JUCE/DSP development commands
+  vim.api.nvim_create_user_command('JuceDSP', function()
+    require("calanuzao.dsp").show_juce_menu()
+  end, { desc = "JUCE/DSP Development Menu" })
+  
+  vim.api.nvim_create_user_command('JuceNew', function()
+    require("calanuzao.juce-dsp").create_juce_project()
+  end, { desc = "Create New JUCE Project" })
+  
+  vim.api.nvim_create_user_command('JuceExamples', function()
+    require("calanuzao.juce-dsp").show_dsp_examples()
+  end, { desc = "Show JUCE DSP Examples" })
+  
+  vim.api.nvim_create_user_command('JuceBuild', function()
+    require("calanuzao.juce-dsp").build_juce_project()
+  end, { desc = "Build JUCE Project" })
+  
+  vim.api.nvim_create_user_command('JuceLearn', function()
+    require("calanuzao.juce-dsp").show_learning_resources()
+  end, { desc = "Show JUCE Learning Resources" })
+  
+  vim.api.nvim_create_user_command('DSPSnippet', function()
+    require("calanuzao.dsp").insert_dsp_snippet()
+  end, { desc = "Insert DSP Code Snippet" })
+  
+  vim.api.nvim_create_user_command('JuceRef', function()
+    require("calanuzao.dsp").show_juce_reference()
+  end, { desc = "Show JUCE API Reference" })
 end
 
 --[[

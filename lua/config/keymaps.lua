@@ -155,30 +155,43 @@ vim.keymap.set("n", "<leader>ts", "<cmd>lua require('neotest').summary.toggle()<
 
 --[[
 ================================================================================
-DEBUGGING WITH DAP
+JUCE/DSP AUDIO DEVELOPMENT
 ================================================================================
 --]]
 
--- Debug Control
-vim.keymap.set("n", "<leader>dt", "<cmd>DapContinue<CR>", { desc = "Start/continue debugging" })
-vim.keymap.set("n", "<leader>dc", "<cmd>DapContinue<CR>", { desc = "Start/continue debugging" })
-vim.keymap.set("n", "<leader>dso", "<cmd>DapStepOver<CR>", { desc = "Step over" })
-vim.keymap.set("n", "<leader>dsi", "<cmd>DapStepInto<CR>", { desc = "Step into" })
-vim.keymap.set("n", "<leader>dsu", "<cmd>DapStepOut<CR>", { desc = "Step out" })
-vim.keymap.set("n", "<leader>dst", "<cmd>DapStepTerminate<CR>", { desc = "Stop debugger" })
+-- JUCE Development keybindings
+vim.keymap.set("n", "<leader>jm", "<cmd>JuceDSP<CR>", { desc = "JUCE/DSP Development Menu" })
+vim.keymap.set("n", "<leader>jn", "<cmd>JuceNew<CR>", { desc = "Create New JUCE Project" })
+vim.keymap.set("n", "<leader>je", "<cmd>JuceExamples<CR>", { desc = "Show JUCE DSP Examples" })
+vim.keymap.set("n", "<leader>jb", "<cmd>JuceBuild<CR>", { desc = "Build JUCE Project" })
+vim.keymap.set("n", "<leader>jl", "<cmd>JuceLearn<CR>", { desc = "Show JUCE Learning Resources" })
+vim.keymap.set("n", "<leader>ji", "<cmd>DSPSnippet<CR>", { desc = "Insert DSP Code Snippet" })
+vim.keymap.set("n", "<leader>jr", "<cmd>JuceRef<CR>", { desc = "Show JUCE API Reference" })
 
--- Breakpoints
-vim.keymap.set("n", "<leader>b", "<cmd>lua require'dap'.toggle_breakpoint()<CR>", { desc = "Toggle breakpoint" })
-vim.keymap.set("n", "<leader>B", "<cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>", { desc = "Conditional breakpoint" })
-vim.keymap.set("n", "<leader>E", "<cmd>lua require'dap'.set_exception_breakpoints()<CR>", { desc = "Toggle exception breakpoint" })
+-- DSP Formulas (existing functionality)
+vim.keymap.set("n", "<leader>df", "<cmd>DSP<CR>", { desc = "Show DSP Formulas" })
 
--- Debug UI
-vim.keymap.set("n", "<leader>dr", "<cmd>lua require'dapui'.float_element('repl', { width = 100, height = 40, enter = true })<CR>", { desc = "Show DAP REPL" })
-vim.keymap.set("n", "<leader>ds", "<cmd>lua require'dapui'.float_element('scopes', { width = 150, height = 50, enter = true })<CR>", { desc = "Show DAP scopes" })
-vim.keymap.set("n", "<leader>df", "<cmd>lua require'dapui'.float_element('stacks', { width = 150, height = 50, enter = true })<CR>", { desc = "Show DAP stacks" })
-vim.keymap.set("n", "<leader>db", "<cmd>lua require'dapui'.float_element('breakpoints', { enter = true })<CR>", { desc = "Show DAP breakpoints" })
-vim.keymap.set("n", "<leader>do", "<cmd>lua require'dapui'.toggle()<CR>", { desc = "Toggle DAP UI" })
-vim.keymap.set("n", "<leader>dl", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debug last test" })
+-- Audio processing file type detection
+vim.api.nvim_create_augroup("JuceDSPFiletype", { clear = true })
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  group = "JuceDSPFiletype",
+  pattern = { "*.jucer", "*.jucerproj" },
+  callback = function()
+    vim.bo.filetype = "xml"
+  end,
+})
+
+-- JUCE project file detection
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  group = "JuceDSPFiletype",
+  pattern = { "*AudioProcessor*.cpp", "*AudioProcessor*.h" },
+  callback = function()
+    -- Auto-setup JUCE environment for audio processor files
+    vim.schedule(function()
+      require("calanuzao.juce-dsp").setup_juce_environment()
+    end)
+  end,
+})
 
 --[[
 ================================================================================

@@ -10,7 +10,6 @@ This module handles all UI-related configuration including:
 - Visual enhancements and transparency
 - Status line and highlights
 
-All existing UI functionality is preserved.
 ================================================================================
 --]]
 
@@ -43,7 +42,7 @@ function M.setup_neovide()
   vim.o.guicursor = "n-v-c-i-ci-ve-r-cr-o-sm:ver25"
 
   -- Transparency settings
-  vim.g.neovide_opacity = 0.9
+  vim.g.neovide_opacity = 0.8 
 
   -- Floating blur (macOS/Linux only)
   vim.g.neovide_floating_blur_amount_x = 2.0

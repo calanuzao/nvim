@@ -729,6 +729,47 @@ Each ftplugin file can configure:
 - **Performance issues**: Toggle profiler with `:Specs`
 - **Theme problems**: Try `:Atheme rose-pine` as a safe fallback
 
+#### **LSP Folding Range Errors**
+If you encounter `textDocument/foldingRange request: unresolvable URI` errors:
+
+1. **Check for unnamed buffers**: The error often occurs with scratch buffers or unnamed files
+   ```vim
+   :echo expand('%:p')    " Check current file path
+   :echo &buftype         " Check buffer type
+   ```
+
+2. **Restart LSP server**: 
+   ```vim
+   :LspRestart
+   ```
+
+3. **Disable folding temporarily**:
+   ```vim
+   :set nofoldenable      " Disable folding
+   :set foldenable        " Re-enable folding
+   ```
+
+4. **Check nvim-ufo configuration**: The error might be related to the UFO folding plugin
+   ```vim
+   :UfoInspect           " Inspect UFO folding status
+   :UfoDetach            " Temporarily disable UFO
+   :UfoAttach            " Re-enable UFO
+   ```
+
+5. **For persistent issues**, add this to your configuration:
+   ```lua
+   -- In lua/config/core.lua or init.lua
+   vim.api.nvim_create_autocmd("LspAttach", {
+     callback = function(args)
+       local client = vim.lsp.get_client_by_id(args.data.client_id)
+       -- Disable folding range for problematic servers
+       if client and client.name == "problematic_server_name" then
+         client.server_capabilities.foldingRangeProvider = false
+       end
+     end,
+   })
+   ```
+
 ## 📋 **Maintenance**
 
 ### **Plugin Updates**
@@ -743,9 +784,114 @@ Each ftplugin file can configure:
 :checkhealth           " Check Neovim health
 :checkhealth lsp       " Check LSP health
 :checkhealth telescope " Check Telescope h
+```
 
 **Happy coding! 🚀**
 
 ---
+
+# New Additions (Audio SDK)
+
+### 1. **Core JUCE/DSP Module** (`lua/calanuzao/juce-dsp.lua`)
+- Project template generation (Audio Plugin, DSP Effect, Synthesizer)
+- DSP code examples library
+- Build system integration
+- Learning resources and tutorials
+
+### 2. **Plugin System** (`lua/plugins/juce-dsp.lua`)
+- Enhanced C++ support with clangd extensions
+- CMake tools integration
+- Telescope file browser for project management
+- Code snippets for JUCE development
+
+### 3. **Enhanced DSP Module** (`lua/calanuzao/dsp.lua`)
+- Extended with JUCE integration
+- Code snippet insertion
+- JUCE API reference
+- Interactive menus
+
+### 4. **Commands & Keybindings**
+- `:JuceDSP` - Main development menu
+- `:JuceNew` - Create new JUCE project
+- `:JuceExamples` - Browse DSP examples
+- `:JuceBuild` - Build current project
+- `:JuceLearn` - Access learning resources
+- `:DSPSnippet` - Insert code snippets
+- `:JuceRef` - Show JUCE API reference
+
+### 5. **Demo & Documentation**
+- Complete audio plugin demo (`demos/juce_audio_demo_setup.sh`)
+- Comprehensive documentation (`docs/JUCE_DSP_INTEGRATION.md`)
+- Test suite for validation
+
+## 🚀 Getting Started
+
+### Quick Start:
+```bash
+# 1. Run the demo setup
+cd ~/.config/nvim/demos
+./juce_audio_demo_setup.sh
+
+# 2. In Neovim, try:
+# :JuceDSP          # Main menu
+# <leader>jm        # Quick access to JUCE menu
+# <leader>jn        # Create new project
+# <leader>je        # Browse examples
+```
+
+### Key Features for Engineers:
+1. **Educational**: DSP formulas, learning resources, structured tutorials
+2. **Practical**: Ready-to-use templates, build integration, code snippets
+3. **Professional**: Real-world plugin development, CMake integration, LSP support
+
+## 🎯 Learning Path
+
+### For DSP Engineers:
+1. **Theory**: Use `:DSP` for mathematical reference
+2. **Practice**: Try `:JuceExamples` for hands-on code
+3. **Project**: Create plugin with `:JuceNew`
+4. **Learn**: Access tutorials with `:JuceLearn`
+
+### For Audio Developers:
+1. **Templates**: Start with pre-built plugin structures
+2. **Build**: Integrated CMake workflow
+3. **Debug**: LSP support with real-time error checking
+4. **Deploy**: Automatic plugin installation
+
+## 📊 What Engineers Can Build
+
+### Audio Effects:
+- **Filters**: Low-pass, high-pass, band-pass, parametric EQ
+- **Dynamics**: Compressors, limiters, expanders, gates
+- **Modulation**: Chorus, flanger, phaser, tremolo
+- **Time-based**: Reverb, delay, echo, convolution
+
+### Signal Processing:
+- **Analysis**: FFT, spectrum analysis, metering
+- **Synthesis**: Oscillators, noise generators, wavetables
+- **Control**: MIDI processing, automation, modulation
+- **Optimization**: SIMD processing, real-time safety
+
+### Educational Tools:
+- **Visualization**: Real-time signal display
+- **Interactive**: Parameter exploration
+- **Comparative**: Algorithm comparison tools
+- **Research**: Custom DSP algorithm implementation
+
+## 🔧 Technical Stack
+
+- **Framework**: JUCE 7.x (cross-platform audio framework)
+- **Build System**: CMake with modern C++17
+- **IDE Integration**: Neovim with LSP, clangd, CMake tools
+- **Plugin Formats**: VST3, AU, Standalone applications
+- **Platforms**: macOS, Linux, Windows support
+
+## 📚 Next Steps
+
+1. **Explore**: Run the demo and explore the examples
+2. **Learn**: Go through the learning resources
+3. **Build**: Create your first audio plugin
+4. **Expand**: Add custom templates and examples
+5. **Share**: Contribute back to the configuration
 
 *This configuration is actively maintained and optimized for productivity. For questions or customizations, refer to the modular structure in `lua/config/` where each aspect is clearly organized and documented.*
