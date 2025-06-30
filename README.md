@@ -160,10 +160,19 @@ K                    " Show hover documentation
 <leader>cs           " Show symbol info
 <leader>ct           " Show type hierarchy
 
-" Build & Run Commands
-:CppCompile          " Compile current file
+" Build & Run Commands (opens terminal in bottom split like Ctrl+\)
+:CppCompile          " Compile current file using makeprg
 :CppRun              " Run compiled executable
-:CppCompileRun       " Compile and run
+:CppCompileRun       " Compile and run (most commonly used)
+:CppCompileRunSmall  " Compile and run in small bottom split
+:CppCompileRunTab    " Compile and run in new tab
+:CppQuickCompile     " Smart compile: silent on success, shows errors in split
+:CppDirectCompile    " Direct compilation without terminal output
+:CppTest             " Test compilation and show detailed error output
+:CppDebug            " Debug compilation settings and environment
+
+" All compilation commands use g++ -std=c++17 -Wall -Wextra -g
+" Terminal splits behave like your Ctrl+\ terminal for natural workflow
 
 " Header-specific (.h files)
 :HeaderGuard         " Insert header guard
@@ -710,188 +719,119 @@ The `ftplugin/` directory contains filetype-specific configurations that automat
 - **Python**: `pyright`, `ruff-lsp`, `black`, `isort`, `pylint`, `mypy`, `debugpy`
 - **Java**: `jdtls` (via Mason)
 
-To add support for other languages, create new files in `ftplugin/`:
-```bash
-# Example: Add Rust support
-touch ~/.config/nvim/ftplugin/rust.lua
-```
-
-Each ftplugin file can configure:
-- Language servers (LSP)
-- Formatting and linting
-- Keybindings specific to that language
-- Compiler settings
-- Custom commands and snippets
-
-### **Troubleshooting**
-- **Plugin issues**: Check `lazy-lock.json` for version conflicts
-- **LSP problems**: Restart LSP with `:LspRestart`
-- **Performance issues**: Toggle profiler with `:Specs`
-- **Theme problems**: Try `:Atheme rose-pine` as a safe fallback
-
-#### **LSP Folding Range Errors**
-If you encounter `textDocument/foldingRange request: unresolvable URI` errors:
-
-1. **Check for unnamed buffers**: The error often occurs with scratch buffers or unnamed files
-   ```vim
-   :echo expand('%:p')    " Check current file path
-   :echo &buftype         " Check buffer type
-   ```
-
-2. **Restart LSP server**: 
-   ```vim
-   :LspRestart
-   ```
-
-3. **Disable folding temporarily**:
-   ```vim
-   :set nofoldenable      " Disable folding
-   :set foldenable        " Re-enable folding
-   ```
-
-4. **Check nvim-ufo configuration**: The error might be related to the UFO folding plugin
-   ```vim
-   :UfoInspect           " Inspect UFO folding status
-   :UfoDetach            " Temporarily disable UFO
-   :UfoAttach            " Re-enable UFO
-   ```
-
-5. **For persistent issues**, add this to your configuration:
-   ```lua
-   -- In lua/config/core.lua or init.lua
-   vim.api.nvim_create_autocmd("LspAttach", {
-     callback = function(args)
-       local client = vim.lsp.get_client_by_id(args.data.client_id)
-       -- Disable folding range for problematic servers
-       if client and client.name == "problematic_server_name" then
-         client.server_capabilities.foldingRangeProvider = false
-       end
-     end,
-   })
-   ```
-
-## 📋 **Maintenance**
-
-### **Plugin Updates**
-```vim
-:Lazy update          " Update all plugins
-:Lazy sync            " Sync plugins with configuration
-:Lazy clean           " Remove unused plugins
-```
-
-### **Health Checks**
-```vim
-:checkhealth           " Check Neovim health
-:checkhealth lsp       " Check LSP health
-:checkhealth telescope " Check Telescope h
-```
-
-**Happy coding! 🚀**
-
 ---
 
-# New Additions (Audio SDK)
+## **🚀 C++ Development Workflow**
 
-### 1. **Core JUCE/DSP Module** (`lua/calanuzao/juce-dsp.lua`)
-- Project template generation (Audio Plugin, DSP Effect, Synthesizer)
-- DSP code examples library
-- Build system integration
-- Learning resources and tutorials
+This configuration provides a complete C++ development environment with modern tooling and an intuitive workflow. All commands are designed to work seamlessly with terminal splits that behave like your native `Ctrl+\` terminal.
 
-### 2. **Plugin System** (`lua/plugins/juce-dsp.lua`)
-- Enhanced C++ support with clangd extensions
-- CMake tools integration
-- Telescope file browser for project management
-- Code snippets for JUCE development
-
-### 3. **Enhanced DSP Module** (`lua/calanuzao/dsp.lua`)
-- Extended with JUCE integration
-- Code snippet insertion
-- JUCE API reference
-- Interactive menus
-
-### 4. **Commands & Keybindings**
-- `:JuceDSP` - Main development menu
-- `:JuceNew` - Create new JUCE project
-- `:JuceExamples` - Browse DSP examples
-- `:JuceBuild` - Build current project
-- `:JuceLearn` - Access learning resources
-- `:DSPSnippet` - Insert code snippets
-- `:JuceRef` - Show JUCE API reference
-
-### 5. **Demo & Documentation**
-- Complete audio plugin demo (`demos/juce_audio_demo_setup.sh`)
-- Comprehensive documentation (`docs/JUCE_DSP_INTEGRATION.md`)
-- Test suite for validation
-
-## 🚀 Getting Started
-
-### Quick Start:
-```bash
-# 1. Run the demo setup
-cd ~/.config/nvim/demos
-./juce_audio_demo_setup.sh
-
-# 2. In Neovim, try:
-# :JuceDSP          # Main menu
-# <leader>jm        # Quick access to JUCE menu
-# <leader>jn        # Create new project
-# <leader>je        # Browse examples
+### **📁 Project Structure**
+```
+your_project/
+├── main.cpp          # Your C++ source files  
+├── utils.h           # Header files
+├── utils.cpp         # Implementation files
+└── build/            # Compiled executables (auto-created)
 ```
 
-### Key Features for Engineers:
-1. **Educational**: DSP formulas, learning resources, structured tutorials
-2. **Practical**: Ready-to-use templates, build integration, code snippets
-3. **Professional**: Real-world plugin development, CMake integration, LSP support
+### **⚡ Quick Start Workflow**
+1. **Create a C++ file**: `touch hello.cpp`
+2. **Open in Neovim**: `nvim hello.cpp`
+3. **Write your code**: Use LSP features (auto-completion, error checking)
+4. **Compile and run**: `:CppCompileRun`
 
-## 🎯 Learning Path
+### **🔧 Available Commands**
 
-### For DSP Engineers:
-1. **Theory**: Use `:DSP` for mathematical reference
-2. **Practice**: Try `:JuceExamples` for hands-on code
-3. **Project**: Create plugin with `:JuceNew`
-4. **Learn**: Access tutorials with `:JuceLearn`
+#### **Primary Commands** (Most commonly used)
+| Command | Description | Split Behavior |
+|---------|-------------|----------------|
+| `:CppCompileRun` | Compile and run program | Bottom split (like `Ctrl+\`) |
+| `:CppQuickCompile` | Smart compile: silent success, shows errors | Small split on errors only |
+| `:CppRun` | Run already compiled executable | Bottom split |
 
-### For Audio Developers:
-1. **Templates**: Start with pre-built plugin structures
-2. **Build**: Integrated CMake workflow
-3. **Debug**: LSP support with real-time error checking
-4. **Deploy**: Automatic plugin installation
+#### **Specialized Commands**
+| Command | Description | Use Case |
+|---------|-------------|----------|
+| `:CppCompile` | Compile only (no run) | Check for compilation errors |
+| `:CppCompileRunSmall` | Compile and run in small split | Minimal screen usage |
+| `:CppCompileRunTab` | Compile and run in new tab | Complex programs with lots of output |
+| `:CppDirectCompile` | Silent compilation | Scripts or automation |
+| `:CppTest` | Detailed compilation testing | Debugging compilation issues |
+| `:CppDebug` | Show environment and settings | Troubleshooting setup |
 
-## 📊 What Engineers Can Build
+### **💡 Workflow Examples**
 
-### Audio Effects:
-- **Filters**: Low-pass, high-pass, band-pass, parametric EQ
-- **Dynamics**: Compressors, limiters, expanders, gates
-- **Modulation**: Chorus, flanger, phaser, tremolo
-- **Time-based**: Reverb, delay, echo, convolution
+#### **🎯 Quick Development Cycle**
+```vim
+" 1. Open file
+nvim calculator.cpp
 
-### Signal Processing:
-- **Analysis**: FFT, spectrum analysis, metering
-- **Synthesis**: Oscillators, noise generators, wavetables
-- **Control**: MIDI processing, automation, modulation
-- **Optimization**: SIMD processing, real-time safety
+" 2. Write code with full LSP support
+" - Auto-completion with Ctrl+Space
+" - Real-time error checking
+" - Hover documentation with K
 
-### Educational Tools:
-- **Visualization**: Real-time signal display
-- **Interactive**: Parameter exploration
-- **Comparative**: Algorithm comparison tools
-- **Research**: Custom DSP algorithm implementation
+" 3. Compile and run (most common)
+:CppCompileRun
+" Opens bottom terminal, compiles with g++ -std=c++17, runs if successful
 
-## 🔧 Technical Stack
+" 4. Close terminal and continue coding
+" Use Ctrl+w q or exit terminal normally
+```
 
-- **Framework**: JUCE 7.x (cross-platform audio framework)
-- **Build System**: CMake with modern C++17
-- **IDE Integration**: Neovim with LSP, clangd, CMake tools
-- **Plugin Formats**: VST3, AU, Standalone applications
-- **Platforms**: macOS, Linux, Windows support
+#### **🐛 Debugging Compilation Errors**
+```vim
+" Use smart compilation for error checking
+:CppQuickCompile
+" ✅ Success: Shows message, asks to run
+" ❌ Error: Opens formatted error display in split
 
-## 📚 Next Steps
+" For detailed error analysis
+:CppTest
+" Shows full compilation command and detailed error output
+```
 
-1. **Explore**: Run the demo and explore the examples
-2. **Learn**: Go through the learning resources
-3. **Build**: Create your first audio plugin
-4. **Expand**: Add custom templates and examples
-5. **Share**: Contribute back to the configuration
+#### **📊 Working with Large Programs**
+```vim
+" Use tab-based compilation for programs with lots of output
+:CppCompileRunTab
+" Opens new tab for compilation, keeps code tab clean
+```
 
-*This configuration is actively maintained and optimized for productivity. For questions or customizations, refer to the modular structure in `lua/config/` where each aspect is clearly organized and documented.*
+### **🔨 Compilation Details**
+- **Compiler**: `g++` (GNU C++ Compiler)
+- **Standard**: C++17 (`-std=c++17`)
+- **Flags**: `-Wall -Wextra -g` (all warnings + debugging info)
+- **Output**: Executable named after source file (e.g., `main.cpp` → `main`)
+
+### **⌨️ LSP Features (Automatic)**
+When you open any `.cpp`, `.c`, or `.h` file, you get:
+- **Real-time error checking** as you type
+- **Auto-completion** with `Ctrl+Space`
+- **Go to definition** with `gd`
+- **Find references** with `gr`
+- **Hover documentation** with `K`
+- **Smart renaming** with `<leader>rn`
+- **Code actions** with `<leader>ca`
+- **Auto-formatting** with `<leader>f`
+
+### **🔄 Header/Source Management**
+- **Switch between header/source**: `<leader>ch`
+- **Generate header guards**: `:HeaderGuard` (in .h files)
+- **Create class templates**: `:ClassTemplate` (in .h files)
+
+### **🎨 Terminal Integration**
+All compilation commands use `botright split` to create terminal splits that:
+- **Appear at the bottom** of your screen (like `Ctrl+\`)
+- **Maintain natural terminal behavior**
+- **Don't interfere with your coding workflow**
+- **Can be closed normally** (`exit` or `Ctrl+w q`)
+
+### **⚠️ Troubleshooting**
+If you encounter issues:
+1. **Check your setup**: `:CppDebug`
+2. **Test compilation**: `:CppTest`
+3. **Verify LSP**: `:LspInfo` (should show clangd running)
+4. **Check tools**: Ensure `g++` and `clangd` are installed
+
+---
