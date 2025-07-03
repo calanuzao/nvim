@@ -245,6 +245,21 @@ vim.keymap.set("t", "<C-t>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 --[[
 ================================================================================
+LEETCODE CODING PRACTICE
+================================================================================
+--]]
+
+-- LeetCode commands
+vim.keymap.set("n", "<leader>lq", "<cmd>Leet<CR>", { desc = "Open LeetCode" })
+vim.keymap.set("n", "<leader>ll", "<cmd>Leet list<CR>", { desc = "List LeetCode problems" })
+vim.keymap.set("n", "<leader>lr", "<cmd>Leet run<CR>", { desc = "Run LeetCode solution" })
+vim.keymap.set("n", "<leader>ls", "<cmd>Leet submit<CR>", { desc = "Submit LeetCode solution" })
+vim.keymap.set("n", "<leader>li", "<cmd>Leet info<CR>", { desc = "Show problem info" })
+vim.keymap.set("n", "<leader>lc", "<cmd>Leet console<CR>", { desc = "Open LeetCode console" })
+vim.keymap.set("n", "<leader>ld", "<cmd>Leet desc<CR>", { desc = "Toggle problem description" })
+
+--[[
+================================================================================
 MISCELLANEOUS
 ================================================================================
 --]]
