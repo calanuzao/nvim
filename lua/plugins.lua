@@ -171,19 +171,19 @@ return {
     },
 },
   -- homepage tips 
-{
-  "TobinPalmer/Tip.nvim",
-  event = "VimEnter",
-  init = function()
-    -- Default config
-    --- @type Tip.config
-    require("tip").setup({
-      seconds = 2,
-      title = "Tip!",
-      url = "https://vtip.43z.one", -- Or https://vimiscool.tech/neotip
-    })
-  end,
-},
+--{
+--  "TobinPalmer/Tip.nvim",
+--  event = "VimEnter",
+--  init = function()
+--    -- Default config
+--    --- @type Tip.config
+--    require("tip").setup({
+--      seconds = 2,
+--      title = "Tip!",
+--      url = "https://vtip.43z.one", -- Or https://vimiscool.tech/neotip
+--    })
+--  end,
+--},
   -- scrollbar
 {
     'Xuyuanp/scrollbar.nvim',
@@ -218,9 +218,19 @@ return {
 {
   "rcarriga/nvim-notify",
   config = function()
-    require("notify").setup({
+    local notify = require("notify")
+    notify.setup({
       background_colour = "#000000", -- prevent transparency-related warning
+      stages = "fade", -- Simple fade animation
+      timeout = 1500, -- Shorter timeout (1.5 seconds)
+      render = "compact", -- Compact style
+      top_down = false, -- Show from bottom up
+      max_width = 50,
+      max_height = 5,
+      minimum_width = 20,
     })
+    -- Set as default notification handler
+    vim.notify = notify
   end,
 },
 {
@@ -277,9 +287,9 @@ return {
   lazy = false,  -- loading immediately
   config = function()
     -- enable Copilot globally
-    vim.g.copilot_enabled = true
+    vim.g.copilot_enabled = false 
     
-    -- sisable the default key mappings for Tab and Shift-Tab
+    -- disable the default key mappings for Tab and Shift-Tab
     vim.g.copilot_no_tab_map = true
     
     -- Optional: Custom key mappings
@@ -298,18 +308,8 @@ return {
     -- Detect OS
     local system = vim.loop.os_uname().sysname
 
-    -- Set PDF viewer based on OS
-    if system == "Darwin" then  -- macOS
-      vim.g.vimtex_view_method = 'skim'
-      -- Forward search after compilation
-      vim.g.vimtex_view_skim_sync = 1
-      -- Focus Skim after forward search
-      vim.g.vimtex_view_skim_activate = 1
-    elseif system == "Linux" then
-      vim.g.vimtex_view_method = 'zathura'
-    elseif system == "Windows_NT" then
-      vim.g.vimtex_view_method = 'sumatrapdf'
-    end
+    -- Set PDF viewer - using zathura
+    vim.g.vimtex_view_method = 'zathura'
     
     -- PDF Viewer settings
     vim.g.vimtex_quickfix_mode = 0
@@ -378,13 +378,12 @@ return {
         vim.opt_local.shiftwidth = 2
         vim.opt_local.softtabstop = 2
         
-        -- Compile on save
+        -- Compile on save (use buffer = 0 since we're inside a FileType autocmd)
         vim.api.nvim_create_autocmd("BufWritePost", {
-          pattern = "*.tex",
+          buffer = 0,
           callback = function()
-            vim.cmd("VimtexCompile")
+            vim.cmd("silent! VimtexCompile")
           end,
-          buffer = 0
         })
       end
     })
@@ -636,17 +635,37 @@ return {
     local plenary_path = require("plenary.path")
     local Job = require("plenary.job")
     
-    -- Define your custom logo
+    -- custom logo
     dashboard.section.header.val = {
-      [[⣿⣿⣿⣿⣿⣶⣄⣠⣴⣶⣶⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⡇⠀⣿⣿⠆⢰⣿⣷⠀ ]],
-      [[⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⢀⣄⣀⠀⠀⠀⣀⣠⣄⣀⣀⣀⠀⠸⣿⣿⠀⠀⠀⢀⡀⠀⣀⡀⠀⠀⠀⠀⣀⣠⣄⣸⣿⡇⠀⢈⣉⡀⠀⣉⣁⠀ ]],
-      [[⠛⠿⣿⣿⣿⣿⣿⣷⣹⣿⣿⣿⣧⠀⣰⣷⠀⠘⠿⣿⠇⠀⣾⣿⠿⠻⢿⣿⣿⠀⠀⣿⣿⠀⢀⣾⣿⡇⠀⢿⣿⣦⡀⢀⣾⣿⠟⠻⢿⣿⣿⠀⢸⣿⡇⠀⣿⣿⡆ ]],
-      [[⠀⢸⣿⣿⣿⡛⣿⣿⣷⣿⣿⣿⠟⠀⣿⣿⠀⠀⠀⠀⠀⢸⣿⡏⠀⠀⠀⢻⣿⡆⠀⢹⣿⡇⢸⣿⡟⠀⠀⠀⠹⣿⣧⢸⣿⡏⠀⠀⠀⣿⣿⡄⠈⣿⣿⠀⢸⣿⡇ ]],
-      [[⠀⠘⠿⣿⣿⣿⣾⣿⣿⣿⠏⠁⠀⠀⢻⣿⣧⡀⠀⠀⣀⠀⣿⣿⣄⠀⠀⢸⣿⣇⠀⢸⣿⣧⠘⣿⣿⣄⠀⠀⣠⣿⡟⠘⣿⣿⣄⠀⠀⢻⣿⡇⠀⣿⣿⡄⠘⣿⣧ ]],
-      [[⠀⠀  ⢸⣿⣿⣿⡏⣿⠇⠀⠀⠀⠀⠙⠿⣿⣿⣿⡿⠆⠈⠻⢿⣿⠀⠘⣿⣿⣷⠘⣿⣿⠀⠘⠻⣿⡄⠀⣿⠿⠁⠀⠘⠿⣿⣿⠀⠸⣿⡷⠀⢻⣿⡇⠀⣿⣿⠀]],
-      [[                                                            ]],
-      [[                       𝒸𝒶𝓁𝑜𝒹𝒾𝒾 𝓈𝓉𝓊𝒹𝒾𝑜𝓈 🐝                   ]],
-      [[                                                            ]],
+      [[                                                                       ]],
+	    [[                                                                     ]],
+	    [[       ████ ██████           █████      ██                     ]],
+	    [[      ███████████             █████                             ]],
+	    [[      █████████ ███████████████████ ███   ███████████   ]],
+	    [[     █████████  ███    █████████████ █████ ██████████████   ]],
+	    [[    █████████ ██████████ █████████ █████ █████ ████ █████   ]],
+	    [[  ███████████ ███    ███ █████████ █████ █████ ████ █████  ]],
+	    [[ ██████  █████████████████████ ████ █████ █████ ████ ██████ ]],
+	    [[                                                                       ]],
+      [[                                                                       ]],
+--	    [[  ██████   █████                   █████   █████  ███                  ]],
+--	    [[ ░░██████ ░░███                   ░░███   ░░███  ░░░                   ]],
+--	    [[  ░███░███ ░███   ██████   ██████  ░███    ░███  ████  █████████████   ]],
+--	    [[  ░███░░███░███  ███░░███ ███░░███ ░███    ░███ ░░███ ░░███░░███░░███  ]],
+--	    [[  ░███ ░░██████ ░███████ ░███ ░███ ░░███   ███   ░███  ░███ ░███ ░███  ]],
+--	    [[  ░███  ░░█████ ░███░░░  ░███ ░███  ░░░█████░    ░███  ░███ ░███ ░███  ]],
+--	    [[  █████  ░░█████░░██████ ░░██████     ░░███      █████ █████░███ █████ ]],
+--	    [[ ░░░░░    ░░░░░  ░░░░░░   ░░░░░░       ░░░      ░░░░░ ░░░░░ ░░░ ░░░░░  ]],
+--	    [[                                                                       ]],
+--      [[⣿⣿⣿⣿⣿⣶⣄⣠⣴⣶⣶⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⡇⠀⣿⣿⠆⢰⣿⣷⠀ ]],
+--      [[⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⢀⣄⣀⠀⠀⠀⣀⣠⣄⣀⣀⣀⠀⠸⣿⣿⠀⠀⠀⢀⡀⠀⣀⡀⠀⠀⠀⠀⣀⣠⣄⣸⣿⡇⠀⢈⣉⡀⠀⣉⣁⠀ ]],
+--      [[⠛⠿⣿⣿⣿⣿⣿⣷⣹⣿⣿⣿⣧⠀⣰⣷⠀⠘⠿⣿⠇⠀⣾⣿⠿⠻⢿⣿⣿⠀⠀⣿⣿⠀⢀⣾⣿⡇⠀⢿⣿⣦⡀⢀⣾⣿⠟⠻⢿⣿⣿⠀⢸⣿⡇⠀⣿⣿⡆ ]],
+--      [[⠀⢸⣿⣿⣿⡛⣿⣿⣷⣿⣿⣿⠟⠀⣿⣿⠀⠀⠀⠀⠀⢸⣿⡏⠀⠀⠀⢻⣿⡆⠀⢹⣿⡇⢸⣿⡟⠀⠀⠀⠹⣿⣧⢸⣿⡏⠀⠀⠀⣿⣿⡄⠈⣿⣿⠀⢸⣿⡇ ]],
+--      [[⠀⠘⠿⣿⣿⣿⣾⣿⣿⣿⠏⠁⠀⠀⢻⣿⣧⡀⠀⠀⣀⠀⣿⣿⣄⠀⠀⢸⣿⣇⠀⢸⣿⣧⠘⣿⣿⣄⠀⠀⣠⣿⡟⠘⣿⣿⣄⠀⠀⢻⣿⡇⠀⣿⣿⡄⠘⣿⣧ ]],
+--      [[⠀⠀  ⢸⣿⣿⣿⡏⣿⠇⠀⠀⠀⠀⠙⠿⣿⣿⣿⡿⠆⠈⠻⢿⣿⠀⠘⣿⣿⣷⠘⣿⣿⠀⠘⠻⣿⡄⠀⣿⠿⠁⠀⠘⠿⣿⣿⠀⠸⣿⡷⠀⢻⣿⡇⠀⣿⣿⠀]],
+--      [[                                                            ]],
+--      [[                       𝒸𝒶𝓁𝑜𝒹𝒾𝒾 𝓈𝓉𝓊𝒹𝒾𝑜𝓈 🐝                   ]],
+--      [[                                                            ]],
     }
     
     -- Create a function to generate git contribution heatmap
@@ -798,11 +817,11 @@ return {
       dashboard.button("n", "Σ      New File",                ":ene <BAR> startinsert <CR>"),
       dashboard.button("r", "Ω      Recent Files",            ":Telescope oldfiles <CR>"),
       dashboard.button("t", "φ      Find Text",               ":Telescope live_grep <CR>"),
-      dashboard.button("c", "∫      Configuration",           ":e $MYVIMRC <CR>"),
-      dashboard.button("m", "⌨      Keymaps",                 ":e ~/.config/nvim/lua/calanuzao/remaps.lua <CR>"),
-      dashboard.button("p", "π      Plugins",                 ":e ~/.config/nvim/lua/plugins.lua <CR>"),
-      dashboard.button("g", "♾️     Git Profile",             ":lua ShowGitContributions()<CR>"),   
-      dashboard.button("o", "💎     Obsidian Vault",          ":e ~/Documents/ObsidianVault/ <CR>"),
+      --dashboard.button("c", "∫      Configuration",           ":e $MYVIMRC <CR>"),
+      --dashboard.button("m", "⌨      Keymaps",                 ":e ~/.config/nvim/lua/calanuzao/remaps.lua <CR>"),
+      --dashboard.button("p", "π      Plugins",                 ":e ~/.config/nvim/lua/plugins.lua <CR>"),
+      --dashboard.button("g", "♾️     Git Profile",             ":lua ShowGitContributions()<CR>"),   
+      --dashboard.button("o", "💎     Obsidian Vault",          ":e ~/Documents/ObsidianVault/ <CR>"),
       dashboard.button("l", "💤     Lazy",                    ":Lazy<CR>"),                         
       dashboard.button("q", "🚪     Quit",                    ":qa<CR>"),                           
     }
@@ -851,6 +870,7 @@ return {
     dashboard.section.header.opts.hl = "Comment"
     dashboard.section.buttons.opts.hl = "Keyword"
     dashboard.section.buttons.opts.hl_shortcut = "LineNr"
+    dashboard.section.buttons.opts.spacing = 0  -- Remove spacing between buttons
 
     -- Dynamic footer with stats
     local function footer()

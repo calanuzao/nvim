@@ -250,6 +250,106 @@ end
 
 --[[
 ================================================================================
+LATEX AUTO-COMPILATION AND COMMANDS
+================================================================================
+--]]
+
+function M.setup_latex_autocompile()
+  -- Create autogroup for LaTeX compilation
+  vim.api.nvim_create_augroup("LatexAutocompile", { clear = true })
+
+  -- Auto-compile on save
+  vim.api.nvim_create_autocmd("BufWritePost", {
+    group = "LatexAutocompile",
+    pattern = "*.tex",
+    callback = function()
+      local file = vim.fn.expand("%:p")
+      local dir = vim.fn.fnamemodify(file, ":h")
+      local filename = vim.fn.fnamemodify(file, ":t")
+      
+      -- Use pdflatex with nonstopmode
+      local cmd = { "pdflatex", "-interaction=nonstopmode", "-synctex=1", filename }
+      
+      vim.fn.jobstart(cmd, {
+        cwd = dir,
+        on_exit = function(_, exit_code, _)
+          vim.schedule(function()
+            if exit_code == 0 then
+              vim.notify("LaTeX: Compilation succeeded!", vim.log.levels.INFO)
+            else
+              vim.notify("LaTeX: Compilation failed!", vim.log.levels.ERROR)
+            end
+          end)
+        end,
+      })
+    end,
+  })
+end
+
+function M.setup_latex_commands()
+  -- View PDF with zathura (opens in separate window, auto-refreshes)
+  vim.api.nvim_create_user_command('LatexView', function()
+    local pdf_file = vim.fn.expand('%:p:r') .. '.pdf'
+    
+    -- Check if PDF exists
+    if vim.fn.filereadable(pdf_file) == 0 then
+      vim.notify("PDF not found. Compile first with :LatexCompile or save the file.", vim.log.levels.WARN)
+      return
+    end
+    
+    -- Check if zathura is already running for this PDF
+    local check_cmd = string.format("pgrep -f 'zathura.*%s'", vim.fn.fnamemodify(pdf_file, ":t"))
+    local handle = io.popen(check_cmd)
+    local result = handle:read("*a")
+    handle:close()
+    
+    if result and result ~= "" then
+      vim.notify("PDF viewer already open. It will auto-refresh on save.", vim.log.levels.INFO)
+    else
+      -- Open zathura in background (it auto-refreshes when PDF changes)
+      vim.fn.jobstart({"zathura", pdf_file}, {detach = true})
+      vim.notify("PDF viewer opened. It will auto-refresh on save.", vim.log.levels.INFO)
+    end
+  end, { desc = "View LaTeX PDF with zathura (auto-refresh on save)" })
+  
+  -- Compile LaTeX document
+  vim.api.nvim_create_user_command('LatexCompile', function()
+    vim.cmd('VimtexCompile')
+  end, { desc = "Compile LaTeX document" })
+  
+  -- Stop LaTeX compilation
+  vim.api.nvim_create_user_command('LatexStop', function()
+    vim.cmd('VimtexStop')
+  end, { desc = "Stop LaTeX compilation" })
+  
+  -- Clean auxiliary files
+  vim.api.nvim_create_user_command('LatexClean', function()
+    vim.cmd('VimtexClean')
+  end, { desc = "Clean LaTeX auxiliary files" })
+  
+  -- Show compilation errors
+  vim.api.nvim_create_user_command('LatexErrors', function()
+    vim.cmd('VimtexErrors')
+  end, { desc = "Show LaTeX compilation errors" })
+  
+  -- Show table of contents
+  vim.api.nvim_create_user_command('LatexToc', function()
+    vim.cmd('VimtexToc')
+  end, { desc = "Show LaTeX table of contents" })
+  
+  -- Show compiler output
+  vim.api.nvim_create_user_command('LatexLog', function()
+    vim.cmd('VimtexCompileOutput')
+  end, { desc = "Show LaTeX compiler output" })
+  
+  -- Word count
+  vim.api.nvim_create_user_command('LatexWordCount', function()
+    vim.cmd('VimtexCountWords')
+  end, { desc = "Count words in LaTeX document" })
+end
+
+--[[
+================================================================================
 MAIN SETUP FUNCTION
 ================================================================================
 --]]
@@ -257,6 +357,8 @@ MAIN SETUP FUNCTION
 function M.setup()
   M.setup_dsp_command()
   M.setup_maps_command()
+  M.setup_latex_autocompile()
+  M.setup_latex_commands()
 end
 
 return M

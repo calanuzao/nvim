@@ -36,23 +36,24 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
--- C++ specific abbreviations and snippets
-vim.cmd([[
-  iabbrev <buffer> #i #include
-  iabbrev <buffer> #d #define
-  iabbrev <buffer> cout std::cout
-  iabbrev <buffer> cin std::cin
-  iabbrev <buffer> endl std::endl
-  iabbrev <buffer> vec std::vector
-  iabbrev <buffer> str std::string
-]])
+-- C++ specific abbreviations disabled for learning purposes
+-- Uncomment these if you want auto-completion shortcuts later:
+-- vim.cmd([[
+--   iabbrev <buffer> #i #include
+--   iabbrev <buffer> #d #define
+--   iabbrev <buffer> cout std::cout
+--   iabbrev <buffer> cin std::cin
+--   iabbrev <buffer> endl std::endl
+--   iabbrev <buffer> vec std::vector
+--   iabbrev <buffer> str std::string
+-- ]])
 
 -- Set commentstring for C++
 vim.opt_local.commentstring = "// %s"
 
--- Enhanced folding for C++
-vim.opt_local.foldmethod = "syntax"
-vim.opt_local.foldlevel = 1
+-- Disable folding for C++ (better for learning)
+vim.opt_local.foldmethod = "manual"
+vim.opt_local.foldenable = false
 
 -- Compiler settings - ensure C++ specific settings
 vim.opt_local.makeprg = "g++ -std=c++17 -Wall -Wextra -g -o %:r %"
